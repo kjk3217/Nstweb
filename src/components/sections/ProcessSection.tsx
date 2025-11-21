@@ -6,9 +6,9 @@ const steps = [
   {
     id: "01",
     code: "NST-S100",
-    title: "Decomposition",
-    desc: "Removal of construction residue, mold, and harmful bacteria using our proprietary active solution.",
-    details: "Penetrates deep into porous materials to break down pollutants at the molecular level.",
+    title: "o	1단계: 분해/제거 S100",
+    desc: "빛이 있거나 없는 모든 환경에서 유해물질을 지속적으로 광분해하여 흡착 제거합니다.",
+    details: "가시광촉매 광분해/흡착 기술",
     image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=1000",
   },
   {
