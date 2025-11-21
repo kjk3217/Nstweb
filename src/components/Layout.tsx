@@ -31,14 +31,13 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-4 md:px-6 flex justify-between items-center">
         {/* Logo */}
-        <a href="#" className="text-2xl font-bold tracking-tighter flex items-center gap-2">
-          <div className={`w-8 h-8 rounded-sm flex items-center justify-center text-white font-bold ${isScrolled ? 'bg-[#00A896]' : 'bg-white text-[#00A896]'}`}>
-            K
-          </div>
-          <span className={isScrolled ? 'text-[#05668D]' : 'text-white'}>
-            KNST<span className="text-xs ml-1 font-normal opacity-80">엔에스티</span>
-          </span>
-        </a>
+<a href="#" className="flex items-center gap-2">
+  <img 
+    src="/logo.png" {/* 이미지 경로를 여기에 입력하세요 (예: /logo.png) */}
+    alt="KNST Logo" 
+    className="h-8 w-auto object-contain" {/* 높이 h-8은 약 32px입니다. 필요에 따라 h-10, h-12 등으로 조절하세요 */}
+  />
+</a>
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
