@@ -12,7 +12,7 @@ const cards = [
   },
   {
     icon: Building2,
-    title: "Partnerships 검증된 시공 실적",
+    title: "Partnerships 시공 실적 검증",
     desc: "국내 주요 건설사 신축 아파트 전세대 일괄 시공을 통해 독보적인 기술력을 입증했습니다.",
     color: "from-[#05668D] to-[#00A896]",
     image: "https://images.unsplash.com/photo-1653016380323-a4496cbe3cf0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb25zdHJ1Y3Rpb24lMjBzaXRlJTIwYnVpbGRpbmclMjBhcGFydG1lbnRzJTIwa29yZWF8ZW58MXx8fHwxNzYzNzA1MTIwfDA&ixlib=rb-4.1.0&q=80&w=1080"
