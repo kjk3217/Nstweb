@@ -33,16 +33,16 @@ export const ScientificSection = () => {
                     <Award size={64} className="text-white" />
                   </div>
                   
-                  <h3 className="text-3xl font-bold text-[#05668D] mb-2">Korea Environmental Grand Prize</h3>
-                  <p className="text-slate-500 mb-8">Recognized for excellence in indoor air quality improvement technology.</p>
+                  <h3 className="text-3xl font-bold text-[#05668D] mb-2">2025 대한민국환경대상 수상</h3>
+                  <p className="text-slate-500 mb-8">환경부 후원, 실내공기질 개선 기술력 입증.</p>
                   
                   <div className="w-full p-6 bg-slate-50 rounded-xl border border-slate-100 flex items-center gap-4 text-left">
                      <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm border border-slate-100 shrink-0">
                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/Flag_of_South_Korea.svg/255px-Flag_of_South_Korea.svg.png" alt="Korea" className="w-6 h-6 rounded-full object-cover" />
                      </div>
                      <div>
-                       <p className="font-bold text-[#05668D]">Certified Excellence</p>
-                       <p className="text-xs text-slate-400">Ministry of Environment, Republic of Korea</p>
+                       <p className="font-bold text-[#05668D]">국가 공인기관 검증</p>
+                       <p className="text-xs text-slate-400">환경부 교차검증 통과 및 안전성 입증</p>
                      </div>
                   </div>
                 </div>
