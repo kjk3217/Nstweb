@@ -31,13 +31,13 @@ const Navbar = () => {
     >
       <div className="container mx-auto px-4 md:px-6 flex justify-between items-center">
         {/* Logo */}
-<a href="#" className="flex items-center gap-2">
-  <img 
-    src="/logo.png" {/* 이미지 경로를 여기에 입력하세요 (예: /logo.png) */}
-    alt="KNST Logo" 
-    className="h-8 w-auto object-contain" {/* 높이 h-8은 약 32px입니다. 필요에 따라 h-10, h-12 등으로 조절하세요 */}
-  />
-</a>
+      <a href="#" className="flex items-center gap-2">
+      <img 
+         src="/logo.png" 
+         alt="KNST Logo" 
+         className="h-8 w-auto object-contain" 
+       />
+      </a>
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-8">
