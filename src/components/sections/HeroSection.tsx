@@ -41,9 +41,9 @@ export const HeroSection = () => {
           </div>
 
           <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6 break-keep">
-            20 Years of Expertise,<br />
+            20년 축적된 노하우,<br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#02C39A] to-[#F0A202]">
-              Trusted by Major Construction Companies
+              대형 건설사가 직접 검증하고 선택한 기술
             </span>
           </h1>
           
