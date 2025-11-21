@@ -6,7 +6,7 @@ const steps = [
   {
     id: "01",
     code: "NST-S100",
-    title: "o	1단계: 분해/제거 S100",
+    title: "Decomposition 분해/제거",
     desc: "빛이 있거나 없는 모든 환경에서 유해물질을 지속적으로 광분해하여 흡착 제거합니다.",
     details: "가시광촉매 광분해/흡착 기술",
     image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=1000",
@@ -14,17 +14,17 @@ const steps = [
   {
     id: "02",
     code: "NST-S200",
-    title: "Blocking",
-    desc: "Sealing of exposed surfaces to prevent the emission of Formaldehyde and Volatile Organic Compounds (VOCs).",
-    details: "Forms a semi-permanent barrier that allows moisture regulation while blocking toxins.",
+    title: "Blocking 침투/차단",
+    desc: "단순 차폐가 아닌, 자재 내부 깊숙이 침투하여 유해물질을 밖으로 밀어내고 방출을 차단합니다.",
+    details: "유해물질 대량 방출 원인 제거",
     image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1000",
   },
   {
     id: "03",
     code: "NST-F100",
-    title: "Adsorption",
-    desc: "Final air treatment using advanced photocatalytic coating to purify indoor air continuously.",
-    details: "Reacts with indoor light to decompose airborne pollutants and eliminate odors.",
+    title: "Adsorption 흡착/탈취",
+    desc: "시공이 어려운 취약 공간의 잔류 유해물질까지 흡착하여 제거하며 숲속 향기를 더합니다.",
+    details: "다공성 흡착 및 탈취 케어",
     image: "https://images.unsplash.com/photo-1527011046414-4781f1f94f8c?auto=format&fit=crop&q=80&w=1000",
   }
 ];
