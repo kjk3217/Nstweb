@@ -4,7 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { Award } from 'lucide-react';
 
 const data = [
-  { name: '폼알데하이드(HCHO)', before: 100, after: 10 },
+  { name: '폼알데하이드', before: 100, after: 10 },
   { name: '벤젠', before: 85, after: 8 },
   { name: '톨루엔', before: 90, after: 12 },
   { name: 'VOCs', before: 95, after: 15 },
