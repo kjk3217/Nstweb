@@ -63,7 +63,7 @@ export const HeroSection = () => {
               size="lg" 
               className="bg-transparent border-white text-white hover:bg-white hover:text-[#05668D] px-8 py-6 text-lg rounded-none"
             >
-              Learn About NST Method
+              NST 공법 자세히 보기
             </Button>
           </div>
         </motion.div>
