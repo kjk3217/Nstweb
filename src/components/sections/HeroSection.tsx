@@ -48,8 +48,7 @@ export const HeroSection = () => {
           </h1>
           
           <p className="text-xl md:text-2xl text-slate-200 mb-10 font-light max-w-2xl leading-relaxed break-keep">
-            Eco-Friendly NST Method - Korea's Leading Technology for New House Syndrome.
-            We create spaces where you can breathe freely.
+            새집증후군 개선 원조 기술 NST공법. 국내 유일의 원스톱 시스템으로 고객님의 건강과 쾌적한 환경을 책임집니다.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4">
