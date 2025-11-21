@@ -29,10 +29,10 @@ export const PortfolioSection = () => {
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
           <div>
              <h2 className="text-3xl md:text-4xl font-bold text-[#05668D] mb-4">
-              Our Portfolio
+              시공 실적 (Portfolio)
             </h2>
             <p className="text-slate-600">
-              Exploring our successful projects across the nation.
+              국내 대형 건설사가 선택한 NST공법의 주요 시공 사례를 확인하세요.
             </p>
           </div>
           
