@@ -5,22 +5,22 @@ import { Layers, Building2, CheckCircle2 } from 'lucide-react';
 const cards = [
   {
     icon: Layers,
-    title: "One-Stop System",
-    desc: "Complete solution from materials manufacturing to professional installation.",
+    title: "System 원스톱 시스템",
+    desc: "원료관리-연구개발-제품생산까지 모든 과정을 직접 수행하여 완벽한 품질을 약속합니다.",
     color: "from-[#00A896] to-[#02C39A]",
     image: "https://images.unsplash.com/photo-1760970237216-17a474403b5c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb25zdHJ1Y3Rpb24lMjB3b3JrZXIlMjBzYWZldHklMjBnZWFyJTIwaGVsbWV0fGVufDF8fHx8MTc2MzcwNTEyMXww&ixlib=rb-4.1.0&q=80&w=1080"
   },
   {
     icon: Building2,
-    title: "Major Partnerships",
-    desc: "Trusted partner for 1,018+ verified projects with top construction firms.",
+    title: "Partnerships 검증된 시공 실적",
+    desc: "국내 주요 건설사 신축 아파트 전세대 일괄 시공을 통해 독보적인 기술력을 입증했습니다.",
     color: "from-[#05668D] to-[#00A896]",
     image: "https://images.unsplash.com/photo-1653016380323-a4496cbe3cf0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb25zdHJ1Y3Rpb24lMjBzaXRlJTIwYnVpbGRpbmclMjBhcGFydG1lbnRzJTIwa29yZWF8ZW58MXx8fHwxNzYzNzA1MTIwfDA&ixlib=rb-4.1.0&q=80&w=1080"
   },
   {
     icon: CheckCircle2,
-    title: "20 Years Experience",
-    desc: "Customized 3-step process refined over two decades of field experience.",
+    title: "Experience 20년 현장 노하우 ",
+    desc: "20년 경력으로 완성된 현장 맞춤형 3단계 시공법으로 새집증후군을 근본적으로 해결합니다.",
     color: "from-[#F0A202] to-[#FFD700]",
     image: "https://images.unsplash.com/photo-1588665306984-d5c6f62224aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzY2llbnRpc3QlMjBsYWIlMjBjb2F0JTIwcmVzZWFyY2glMjBtaWNyb3Njb3BlfGVufDF8fHx8MTc2MzcwNTEyMHww&ixlib=rb-4.1.0&q=80&w=1080"
   }
