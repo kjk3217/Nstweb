@@ -75,22 +75,22 @@ export const HeroSection = () => {
           <div className="flex items-start gap-4">
             <Award className="text-[#F0A202] shrink-0" size={24} />
             <div>
-              <h3 className="text-white font-bold text-lg">2025 Winner</h3>
-              <p className="text-white/70 text-sm">Korea Environmental Grand Prize</p>
+              <h3 className="text-white font-bold text-lg">2025 수상</h3>
+              <p className="text-white/70 text-sm">대한민국환경대상 (환경부 후원) </p>
             </div>
           </div>
           <div className="flex items-start gap-4">
             <Home className="text-[#02C39A] shrink-0" size={24} />
             <div>
-              <h3 className="text-white font-bold text-lg">1,018+</h3>
-              <p className="text-white/70 text-sm">Apartment Complexes Completed</p>
+              <h3 className="text-white font-bold text-lg">1,018 세대+</h3>
+              <p className="text-white/70 text-sm">대규모 건설사 전세대 일괄 시공</p>
             </div>
           </div>
           <div className="flex items-start gap-4">
             <ShieldCheck className="text-[#00A896] shrink-0" size={24} />
             <div>
-              <h3 className="text-white font-bold text-lg">Verified</h3>
-              <p className="text-white/70 text-sm">Scientifically Proven Results</p>
+              <h3 className="text-white font-bold text-lg">효과 입증</h3>
+              <p className="text-white/70 text-sm">국가 공인기관 및 환경부 교차검증 완료</p>
             </div>
           </div>
         </div>
