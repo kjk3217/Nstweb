@@ -1,29 +1,33 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
-import { ArrowDown, ChevronRight, Award, ShieldCheck, Home } from 'lucide-react';
+import { ArrowDown, Award, ShieldCheck, Home } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { useSiteData } from '@/SiteContext';
 
 export const HeroSection = () => {
+  const { data } = useSiteData();
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 500], [0, 200]);
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
 
+  // 데이터가 로딩 중이거나 없을 때를 대비해 안전 장치 추가
+  const heroData = data?.hero || {
+      title: "Loading...",
+      subtitle: "",
+      bgImage: ""
+  };
+
   return (
     <section className="relative h-screen w-full overflow-hidden bg-slate-900">
-      {/* Background Image with Parallax */}
-      <motion.div 
-        style={{ y: y1 }}
-        className="absolute inset-0 z-0"
-      >
+      <motion.div style={{ y: y1 }} className="absolute inset-0 z-0">
         <img 
-          src="https://images.unsplash.com/photo-1758548157747-285c7012db5b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBjbGVhbiUyMGFwYXJ0bWVudCUyMGludGVyaW9yJTIwYnJpZ2h0fGVufDF8fHx8MTc2MzcwNTEyMHww&ixlib=rb-4.1.0&q=80&w=1080" 
-          alt="Modern clean apartment" 
+          src={heroData.bgImage} 
+          alt="Main Background" 
           className="w-full h-full object-cover opacity-70"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#05668D]/90 via-[#05668D]/40 to-transparent" />
       </motion.div>
 
-      {/* Content */}
       <div className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-center text-white">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -40,15 +44,15 @@ export const HeroSection = () => {
             </span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6 break-keep">
-            20년 축적된 노하우,<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#02C39A] to-[#F0A202]">
-              대형 건설사가 직접 검증하고 선택한 기술
-            </span>
+          <h1 
+            className="text-5xl md:text-7xl font-bold leading-tight mb-6 break-keep whitespace-pre-wrap"
+            style={{ color: data?.theme?.primaryColor ? 'white' : 'inherit' }} 
+          >
+            {heroData.title}
           </h1>
           
           <p className="text-xl md:text-2xl text-slate-200 mb-10 font-light max-w-2xl leading-relaxed break-keep">
-            새집증후군 개선 원조 기술 NST공법. 국내 유일의 원스톱 시스템으로 고객님의 건강과 쾌적한 환경을 책임집니다.
+            {heroData.subtitle}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4">
@@ -69,7 +73,6 @@ export const HeroSection = () => {
         </motion.div>
       </div>
 
-      {/* Floating Stats Bar - Top Right Absolute for Desktop */}
       <div className="hidden lg:block absolute top-32 right-0 bg-white/10 backdrop-blur-md border-l-4 border-[#F0A202] p-6 max-w-xs">
         <div className="space-y-6">
           <div className="flex items-start gap-4">
@@ -96,7 +99,6 @@ export const HeroSection = () => {
         </div>
       </div>
 
-      {/* Scroll Indicator */}
       <motion.div 
         style={{ opacity }}
         className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white flex flex-col items-center gap-2"
