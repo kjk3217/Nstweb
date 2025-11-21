@@ -3,9 +3,9 @@ import { motion } from 'motion/react';
 
 export const ResultsSection = () => {
   const stats = [
-    { value: "1,018+", label: "Complexes", sub: "Completed Projects" },
-    { value: "50+", label: "Teams", sub: "Professional Experts" },
-    { value: "20", label: "Years", sub: "Field Experience" }
+    { value: "1,018+", label: "Complexes", sub: "전세대 일괄시공 프로젝트" },
+    { value: "50+", label: "Teams", sub: "NST 공법 전문 시공팀" },
+    { value: "20", label: "Years", sub: "축적된 기술력과 노하우" }
   ];
 
   const partners = [
