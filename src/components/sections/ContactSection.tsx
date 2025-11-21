@@ -17,9 +17,9 @@ export const ContactSection = () => {
         <div className="max-w-4xl mx-auto bg-white rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row">
            <div className="md:w-1/2 p-12 bg-[#00A896] text-white flex flex-col justify-between relative overflow-hidden">
               <div className="relative z-10">
-                <h2 className="text-3xl font-bold mb-6">Contact Us</h2>
+                <h2 className="text-3xl font-bold mb-6">NST시공 문의</h2>
                 <p className="text-white/90 mb-8 leading-relaxed">
-                  Ready to create a healthier environment? Reach out to our expert team for a consultation.
+                  20년 노하우의 새집증후군 개선 전문가가 직접 상담해 드립니다.
                 </p>
                 
                 <div className="space-y-6">
