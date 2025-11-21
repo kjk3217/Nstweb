@@ -13,7 +13,7 @@ const projects = [
   { id: 6, title: "Acroriver Park", category: "Seoul", year: "2023", builder: "DL E&C", img: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&q=80&w=800" },
 ];
 
-const filters = ["All", "Seoul", "Busan", "Incheon"];
+const filters = ["All", "서울/경기", "충청/대전", "경상/부산"];
 
 export const PortfolioSection = () => {
   const [activeFilter, setActiveFilter] = useState("All");
