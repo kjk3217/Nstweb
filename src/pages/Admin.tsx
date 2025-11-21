@@ -8,295 +8,213 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { 
-  LayoutDashboard, 
-  Palette, 
-  Save, 
-  Image as ImageIcon, 
-  ChevronLeft, 
-  UploadCloud, 
-  Type,
-  Loader2
-} from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Loader2, Save, UploadCloud, LayoutTemplate, Type, Palette, Image as ImageIcon } from 'lucide-react';
 
 export const AdminPage = () => {
   const { data } = useSiteData();
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
 
-  // 텍스트 저장 함수
-  const saveText = async (field: string, value: string) => {
+  // 통합 저장 함수 (점 표기법으로 중첩된 데이터 업데이트)
+  // 예: saveField("hero.title", "새 제목")
+  const saveField = async (fieldPath: string, value: string) => {
     setSaving(true);
     try {
       const docRef = doc(db, "site_config", "main");
-      await updateDoc(docRef, { [field]: value });
-      // 간단한 저장 완료 알림 (실제로는 Toast 등을 쓰면 더 좋습니다)
-      alert("성공적으로 저장되었습니다!"); 
+      await updateDoc(docRef, { [fieldPath]: value });
+      alert("저장되었습니다!");
     } catch (error) {
       console.error(error);
-      alert("저장에 실패했습니다.");
+      alert("저장 실패");
     } finally {
       setSaving(false);
     }
   };
 
-  // 이미지 업로드 함수
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, fieldName: string) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, fieldPath: string) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     setUploading(true);
     try {
-      // 파일명을 고유하게 만들기 위해 타임스탬프 추가
       const imageRef = ref(storage, `images/${Date.now()}_${file.name}`);
       await uploadBytes(imageRef, file);
       const url = await getDownloadURL(imageRef);
-      
-      await saveText(fieldName, url);
+      await saveField(fieldPath, url);
     } catch (error) {
-      console.error(error);
-      alert("이미지 업로드 중 오류가 발생했습니다.");
+      alert("업로드 실패");
     } finally {
       setUploading(false);
     }
   };
 
-  if (!data) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="text-center space-y-4">
-          <Loader2 className="h-10 w-10 animate-spin text-slate-400 mx-auto" />
-          <p className="text-slate-500 font-medium">설정을 불러오는 중입니다...</p>
-        </div>
+  if (!data) return <div className="flex h-screen items-center justify-center"><Loader2 className="animate-spin" /></div>;
+
+  // 입력 그룹 컴포넌트 (반복되는 UI 줄이기 위함)
+  const InputGroup = ({ label, path, type = "text", placeholder = "" }: any) => (
+    <div className="space-y-2">
+      <Label>{label}</Label>
+      <div className="flex gap-2">
+        {type === "textarea" ? (
+          <Textarea 
+            defaultValue={path.split('.').reduce((o:any, i:any) => o[i], data)} 
+            id={path} 
+            className="min-h-[80px]"
+          />
+        ) : (
+          <Input 
+            type={type}
+            defaultValue={path.split('.').reduce((o:any, i:any) => o[i], data)} 
+            id={path}
+            placeholder={placeholder}
+          />
+        )}
+        <Button 
+          size="icon"
+          variant="outline"
+          onClick={() => saveField(path, (document.getElementById(path) as HTMLInputElement).value)}
+        >
+          <Save size={16} />
+        </Button>
       </div>
-    );
-  }
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-slate-50/50 pb-20">
-      {/* 상단 헤더 */}
-      <header className="bg-white border-b sticky top-0 z-30">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="bg-slate-900 text-white p-2 rounded-lg">
-              <LayoutDashboard size={20} />
-            </div>
-            <div>
-              <h1 className="font-bold text-lg leading-none">관리자 대시보드</h1>
-              <p className="text-xs text-slate-500 mt-1">웹사이트 콘텐츠 관리 시스템</p>
-            </div>
-          </div>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            onClick={() => window.location.href='/'}
-            className="text-slate-600 hover:text-slate-900 gap-2"
-          >
-            <ChevronLeft size={16} />
-            홈페이지로 돌아가기
-          </Button>
-        </div>
+    <div className="min-h-screen bg-slate-50 pb-20">
+      <header className="bg-white border-b sticky top-0 z-30 px-6 py-4 flex justify-between items-center shadow-sm">
+        <h1 className="font-bold text-xl flex items-center gap-2">
+          <LayoutTemplate className="text-blue-600" /> 관리자 모드
+        </h1>
+        <Button onClick={() => window.location.href='/'} variant="secondary">사이트로 이동</Button>
       </header>
 
-      <div className="container mx-auto px-4 py-8 max-w-5xl">
-        <Tabs defaultValue="hero" className="space-y-8">
-          
-          {/* 탭 메뉴 */}
-          <div className="flex justify-center">
-            <TabsList className="grid w-full max-w-md grid-cols-2 h-12 p-1 bg-slate-200/50 rounded-full">
-              <TabsTrigger 
-                value="hero" 
-                className="rounded-full data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-300"
-              >
-                <LayoutDashboard className="w-4 h-4 mr-2" />
-                메인 배너 관리
-              </TabsTrigger>
-              <TabsTrigger 
-                value="theme" 
-                className="rounded-full data-[state=active]:bg-white data-[state=active]:shadow-sm transition-all duration-300"
-              >
-                <Palette className="w-4 h-4 mr-2" />
-                디자인 테마
-              </TabsTrigger>
-            </TabsList>
-          </div>
+      <div className="container mx-auto max-w-5xl py-8 px-4">
+        <Tabs defaultValue="hero" className="space-y-6">
+          <TabsList className="grid grid-cols-4 w-full">
+            <TabsTrigger value="hero">메인(Hero)</TabsTrigger>
+            <TabsTrigger value="whynst">Why NST</TabsTrigger>
+            <TabsTrigger value="results">실적/통계</TabsTrigger>
+            <TabsTrigger value="contact">연락처/테마</TabsTrigger>
+          </TabsList>
 
-          {/* 1. 메인 배너 설정 탭 */}
-          <TabsContent value="hero" className="animate-in fade-in-50 duration-500">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* --- 1. Hero Section --- */}
+          <TabsContent value="hero">
+            <div className="grid gap-6 md:grid-cols-2">
+              <Card>
+                <CardHeader><CardTitle>텍스트 및 스타일</CardTitle></CardHeader>
+                <CardContent className="space-y-6">
+                  <InputGroup label="메인 타이틀" path="hero.title" type="textarea" />
+                  <div className="grid grid-cols-2 gap-4">
+                    <InputGroup label="글자 크기(px)" path="hero.titleSize" type="number" />
+                    <InputGroup label="글자 색상" path="hero.titleColor" type="color" />
+                  </div>
+                  <div className="h-px bg-slate-100 my-4" />
+                  <InputGroup label="서브 타이틀" path="hero.subtitle" type="textarea" />
+                  <div className="grid grid-cols-2 gap-4">
+                    <InputGroup label="글자 크기(px)" path="hero.subtitleSize" type="number" />
+                    <InputGroup label="글자 색상" path="hero.subtitleColor" type="color" />
+                  </div>
+                </CardContent>
+              </Card>
               
-              {/* 왼쪽: 텍스트 편집 */}
-              <div className="lg:col-span-2 space-y-6">
-                <Card className="shadow-md border-slate-100 overflow-hidden">
-                  <CardHeader className="bg-slate-50/50 border-b pb-4">
-                    <div className="flex items-center gap-2 text-slate-700">
-                      <Type size={18} />
-                      <CardTitle className="text-lg">메인 텍스트 수정</CardTitle>
-                    </div>
-                    <CardDescription>웹사이트 접속 시 가장 먼저 보이는 문구를 수정합니다.</CardDescription>
-                  </CardHeader>
-                  
-                  <CardContent className="p-6 space-y-6">
-                    <div className="space-y-3">
-                      <Label className="text-sm font-semibold text-slate-600">메인 타이틀 (강조 문구)</Label>
-                      <div className="relative">
-                        <Textarea 
-                          id="hero-title" 
-                          defaultValue={data.hero?.title} 
-                          className="min-h-[100px] text-lg font-medium resize-none pr-12 leading-relaxed"
-                          placeholder="메인 타이틀을 입력하세요..."
-                        />
-                      </div>
-                      <div className="flex justify-end">
-                        <Button 
-                          onClick={() => saveText("hero.title", (document.getElementById('hero-title') as HTMLInputElement).value)}
-                          disabled={saving}
-                          className="bg-slate-900 hover:bg-slate-800"
-                        >
-                          <Save className="w-4 h-4 mr-2" />
-                          타이틀 저장
-                        </Button>
-                      </div>
-                    </div>
-
-                    <Separator />
-
-                    <div className="space-y-3">
-                      <Label className="text-sm font-semibold text-slate-600">서브 타이틀 (설명)</Label>
-                      <div className="relative">
-                        <Textarea 
-                          id="hero-subtitle" 
-                          defaultValue={data.hero?.subtitle} 
-                          className="min-h-[80px] resize-none pr-12 text-slate-600"
-                          placeholder="서브 타이틀을 입력하세요..."
-                        />
-                      </div>
-                      <div className="flex justify-end">
-                        <Button 
-                          variant="outline"
-                          onClick={() => saveText("hero.subtitle", (document.getElementById('hero-subtitle') as HTMLInputElement).value)}
-                          disabled={saving}
-                        >
-                          <Save className="w-4 h-4 mr-2" />
-                          설명 저장
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* 오른쪽: 이미지 관리 */}
-              <div className="lg:col-span-1">
-                <Card className="shadow-md border-slate-100 h-full">
-                  <CardHeader className="bg-slate-50/50 border-b pb-4">
-                    <div className="flex items-center gap-2 text-slate-700">
-                      <ImageIcon size={18} />
-                      <CardTitle className="text-lg">배경 이미지</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="p-6">
-                    <div className="space-y-4">
-                      <div className="aspect-video w-full rounded-lg border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center relative overflow-hidden group hover:border-slate-400 transition-colors cursor-pointer">
-                        
-                        {/* 현재 이미지 미리보기 */}
-                        {data.hero?.bgImage ? (
-                          <img 
-                            src={data.hero.bgImage} 
-                            alt="Current Background" 
-                            className="w-full h-full object-cover transition-opacity group-hover:opacity-40" 
-                          />
-                        ) : (
-                          <div className="text-slate-400 flex flex-col items-center">
-                            <ImageIcon size={40} className="mb-2 opacity-50" />
-                            <span className="text-sm">이미지 없음</span>
-                          </div>
-                        )}
-
-                        {/* 업로드 오버레이 */}
-                        <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                          <div className="bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-lg mb-2">
-                            <UploadCloud className="w-6 h-6 text-slate-900" />
-                          </div>
-                          <span className="text-sm font-bold text-slate-900 bg-white/80 px-3 py-1 rounded-full">이미지 변경하기</span>
-                        </div>
-
-                        {/* 실제 파일 입력 (투명하게 덮어씌움) */}
-                        <input 
-                          type="file" 
-                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
-                          accept="image/*"
-                          onChange={(e) => handleImageUpload(e, "hero.bgImage")}
-                          disabled={uploading}
-                        />
-                      </div>
-
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-xs text-slate-500">
-                          <span>상태</span>
-                          <span className={uploading ? "text-blue-500 font-bold" : "text-green-600"}>
-                            {uploading ? "업로드 중..." : "최신 상태"}
-                          </span>
-                        </div>
-                        <p className="text-xs text-slate-400 leading-relaxed">
-                          * 권장 사이즈: 1920 x 1080px<br/>
-                          * 용량이 너무 큰 이미지는 로딩이 느려질 수 있습니다.
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
+              <Card>
+                <CardHeader><CardTitle>배경 이미지</CardTitle></CardHeader>
+                <CardContent>
+                  <div className="aspect-video bg-slate-100 rounded-lg overflow-hidden mb-4 relative group">
+                    <img src={data.hero.bgImage} className="w-full h-full object-cover" alt="bg" />
+                    <label className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-white font-bold">
+                      <UploadCloud className="mr-2" /> 클릭하여 변경
+                      <input type="file" className="hidden" onChange={(e) => handleImageUpload(e, "hero.bgImage")} />
+                    </label>
+                  </div>
+                  {uploading && <p className="text-blue-500 text-sm text-center">업로드 중...</p>}
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
 
-          {/* 2. 테마 설정 탭 */}
-          <TabsContent value="theme" className="animate-in fade-in-50 duration-500">
-            <Card className="shadow-md border-slate-100 max-w-2xl mx-auto">
-              <CardHeader className="text-center pb-2">
-                <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Palette size={24} />
-                </div>
-                <CardTitle className="text-xl">브랜드 컬러 설정</CardTitle>
-                <CardDescription>웹사이트의 주요 포인트 색상을 변경합니다.</CardDescription>
-              </CardHeader>
-              <CardContent className="p-8">
-                <div className="flex flex-col items-center space-y-6">
-                  <div className="relative group cursor-pointer">
-                    {/* 컬러 피커 디자인 커스텀 */}
-                    <div 
-                      className="w-32 h-32 rounded-full shadow-xl border-4 border-white ring-1 ring-slate-200 flex items-center justify-center transition-transform group-hover:scale-105"
-                      style={{ backgroundColor: data.theme?.primaryColor || '#000000' }}
-                    >
-                      <Palette className="text-white/80 w-10 h-10 drop-shadow-md" />
+          {/* --- 2. Why NST Section --- */}
+          <TabsContent value="whynst">
+            <Card className="mb-6">
+              <CardHeader><CardTitle>섹션 설정</CardTitle></CardHeader>
+              <CardContent className="grid md:grid-cols-2 gap-6">
+                <InputGroup label="섹션 제목" path="whyNST.sectionTitle" />
+                <InputGroup label="제목 색상" path="whyNST.titleColor" type="color" />
+                <InputGroup label="설명 문구" path="whyNST.desc" type="textarea" />
+                <InputGroup label="카드 높이(px)" path="whyNST.cardHeight" type="number" />
+              </CardContent>
+            </Card>
+
+            <div className="grid md:grid-cols-3 gap-4">
+              {['card1', 'card2', 'card3'].map((cardKey, idx) => (
+                <Card key={cardKey}>
+                  <CardHeader className="pb-2"><CardTitle className="text-base">카드 {idx + 1}</CardTitle></CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="aspect-video bg-slate-100 rounded overflow-hidden relative group">
+                      <img src={data.whyNST[cardKey].image} className="w-full h-full object-cover" alt="card" />
+                      <label className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 cursor-pointer text-white text-xs">
+                        이미지 변경
+                        <input type="file" className="hidden" onChange={(e) => handleImageUpload(e, `whyNST.${cardKey}.image`)} />
+                      </label>
                     </div>
-                    <input 
-                      type="color" 
-                      defaultValue={data.theme?.primaryColor}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      onChange={(e) => saveText("theme.primaryColor", e.target.value)}
-                    />
-                    <div className="absolute bottom-0 right-0 bg-white border border-slate-200 rounded-full p-2 shadow-md">
-                      <UploadCloud size={14} className="text-slate-500" />
-                    </div>
+                    <InputGroup label="제목" path={`whyNST.${cardKey}.title`} />
+                    <InputGroup label="내용" path={`whyNST.${cardKey}.desc`} type="textarea" />
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          {/* --- 3. Results Section --- */}
+          <TabsContent value="results">
+            <Card>
+              <CardHeader><CardTitle>배경 및 통계 수치</CardTitle></CardHeader>
+              <CardContent className="space-y-6">
+                <InputGroup label="배경 색상" path="results.bgColor" type="color" />
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div className="space-y-4 border p-4 rounded-lg">
+                    <h4 className="font-bold text-center">통계 1</h4>
+                    <InputGroup label="값 (예: 1,018+)" path="results.stat1.value" />
+                    <InputGroup label="라벨 (Complexes)" path="results.stat1.label" />
+                    <InputGroup label="설명" path="results.stat1.sub" />
                   </div>
-                  
-                  <div className="text-center space-y-1">
-                    <p className="text-sm font-medium text-slate-900">현재 선택된 색상</p>
-                    <p className="font-mono text-slate-500 bg-slate-100 px-3 py-1 rounded-md text-sm">
-                      {data.theme?.primaryColor}
-                    </p>
+                  <div className="space-y-4 border p-4 rounded-lg">
+                    <h4 className="font-bold text-center">통계 2</h4>
+                    <InputGroup label="값" path="results.stat2.value" />
+                    <InputGroup label="라벨" path="results.stat2.label" />
+                    <InputGroup label="설명" path="results.stat2.sub" />
                   </div>
-                  
-                  <div className="bg-yellow-50 text-yellow-800 text-sm p-4 rounded-lg w-full flex gap-3 items-start">
-                    <div className="mt-0.5">💡</div>
-                    <p>색상을 변경하면 버튼, 강조 텍스트, 아이콘 등 웹사이트 전반의 포인트 컬러가 즉시 변경됩니다.</p>
+                  <div className="space-y-4 border p-4 rounded-lg">
+                    <h4 className="font-bold text-center">통계 3</h4>
+                    <InputGroup label="값" path="results.stat3.value" />
+                    <InputGroup label="라벨" path="results.stat3.label" />
+                    <InputGroup label="설명" path="results.stat3.sub" />
                   </div>
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* --- 4. Contact & Theme --- */}
+          <TabsContent value="contact">
+            <div className="grid gap-6 md:grid-cols-2">
+              <Card>
+                <CardHeader><CardTitle>연락처 정보</CardTitle></CardHeader>
+                <CardContent className="space-y-4">
+                  <InputGroup label="전화번호" path="contact.phone" />
+                  <InputGroup label="이메일" path="contact.email" />
+                  <InputGroup label="주소" path="contact.address" />
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader><CardTitle>전체 테마 색상</CardTitle></CardHeader>
+                <CardContent className="space-y-4">
+                  <InputGroup label="메인 포인트 컬러" path="theme.primaryColor" type="color" />
+                  <InputGroup label="보조 컬러" path="theme.secondaryColor" type="color" />
+                </CardContent>
+              </Card>
+            </div>
           </TabsContent>
 
         </Tabs>
