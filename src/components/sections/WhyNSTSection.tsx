@@ -37,7 +37,7 @@ export const WhyNSTSection = () => {
             viewport={{ once: true }}
             className="text-3xl md:text-4xl font-bold text-[#05668D] mb-4"
           >
-            Why Choose NST Method?
+            새집증후군 왜 NST 공법인가?
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -46,7 +46,7 @@ export const WhyNSTSection = () => {
             transition={{ delay: 0.1 }}
             className="text-slate-600 max-w-2xl mx-auto"
           >
-            We combine advanced technology with eco-friendly materials to provide the safest indoor environment.
+            원료 확보부터 연구·개발, 생산, 시공까지 본사에서 직접 수행하는 국내 유일 통합 솔루션입니다.
           </motion.p>
         </div>
 
