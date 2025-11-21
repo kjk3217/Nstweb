@@ -60,7 +60,7 @@ export const ScientificSection = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl md:text-4xl font-bold text-[#05668D] mb-6">
-              새집증후군 유발물질n<br />원천 제거 및 차단
+              새집증후군 유발물질<br />원천 제거 및 차단
             </h2>
             <p className="text-slate-600 mb-10 leading-relaxed">
               NST 공법은 공정 시험법에 따라 유해물질 저감 성능을 객관적으로 입증받았으며, 시공 후 즉시 입주가 가능할 정도로 안전합니다.
