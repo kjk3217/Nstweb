@@ -4,9 +4,9 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { Award } from 'lucide-react';
 
 const data = [
-  { name: 'Formaldehyde', before: 100, after: 10 },
-  { name: 'Benzene', before: 85, after: 8 },
-  { name: 'Toluene', before: 90, after: 12 },
+  { name: '폼알데하이드(HCHO)', before: 100, after: 10 },
+  { name: '벤젠', before: 85, after: 8 },
+  { name: '톨루엔', before: 90, after: 12 },
   { name: 'VOCs', before: 95, after: 15 },
 ];
 
@@ -60,10 +60,10 @@ export const ScientificSection = () => {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl md:text-4xl font-bold text-[#05668D] mb-6">
-              90%+ Reduction in<br />Harmful Substances
+              새집증후군 유발물질n<br />원천 제거 및 차단
             </h2>
             <p className="text-slate-600 mb-10 leading-relaxed">
-              Our method is scientifically proven to drastically reduce harmful VOCs and Formaldehyde, ensuring your indoor air is as clean as nature intended.
+              NST 공법은 공정 시험법에 따라 유해물질 저감 성능을 객관적으로 입증받았으며, 시공 후 즉시 입주가 가능할 정도로 안전합니다.
             </p>
             
             <div className="h-[400px] w-full bg-white p-6 rounded-2xl shadow-lg border border-slate-100">
