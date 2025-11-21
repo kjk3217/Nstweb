@@ -37,10 +37,10 @@ export const ProcessSection = () => {
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-[#05668D] mb-4">
-            The NST 3-Step Process
+            NST공법 3단계 메커니즘
           </h2>
           <p className="text-slate-600 max-w-2xl mx-auto">
-            A scientifically engineered method to ensure your home is safe from day one.
+            단순한 코팅이 아닌, 공기를 설계하는 과학 기술입니다. 이미 방출된 유해물질뿐만 아니라 앞으로 발생할 오염물질까지 제거합니다.
           </p>
         </div>
 
