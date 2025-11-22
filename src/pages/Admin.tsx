@@ -9,37 +9,45 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { 
-  Loader2, Save, UploadCloud, LayoutTemplate, Eye, 
-  CheckCircle2, AlertCircle, Home, Palette, BarChart3,
-  Mail, Image as ImageIcon, X, Monitor, Menu, LogOut
+  Loader2, UploadCloud, LayoutTemplate, Eye, 
+  CheckCircle2, AlertCircle, BarChart3,
+  Palette, Image as ImageIcon, X, Monitor, Menu, LogOut, Mail
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
-// --- [초기 데이터 타입 및 기본값 정의] ---
-// SiteContext를 사용하지 않고 직접 데이터를 호출하여 안정성을 높입니다.
+// --- [1. 초기 기본 데이터 정의] ---
+// DB 연결 실패 시에도 이 데이터로 화면을 먼저 그립니다.
 const defaultData = {
   hero: {
-    title: "", titleColor: "#ffffff", titleSize: "60",
-    subtitle: "", subtitleColor: "#e2e8f0", subtitleSize: "20",
-    bgImage: ""
+    title: "20년 축적된 노하우, 대형 건설사가 선택한 기술",
+    titleColor: "#ffffff", titleSize: "60",
+    subtitle: "새집증후군 개선 원조 기술 NST공법. 국내 유일의 원스톱 시스템으로...",
+    subtitleColor: "#e2e8f0", subtitleSize: "20",
+    bgImage: "https://images.unsplash.com/photo-1758548157747-285c7012db5b?auto=format&fit=crop&q=80&w=1080"
   },
   whyNST: {
-    sectionTitle: "", titleColor: "#05668D", desc: "", cardHeight: "400",
-    card1: { title: "", desc: "", image: "" },
-    card2: { title: "", desc: "", image: "" },
-    card3: { title: "", desc: "", image: "" }
+    sectionTitle: "새집증후군 왜 NST 공법인가?",
+    titleColor: "#05668D", desc: "원료 확보부터 연구·개발, 생산, 시공까지 본사에서 직접 수행하는 국내 유일 통합 솔루션입니다.",
+    cardHeight: "400",
+    card1: { title: "System 원스톱 시스템", desc: "원료관리-연구개발-제품생산까지...", image: "https://images.unsplash.com/photo-1760970237216-17a474403b5c?w=800" },
+    card2: { title: "Partnerships 시공 실적", desc: "국내 건설사 신축 아파트 전세대...", image: "https://images.unsplash.com/photo-1653016380323-a4496cbe3cf0?w=800" },
+    card3: { title: "Experience 20년 노하우", desc: "20년 경력으로 현장 맞춤형...", image: "https://images.unsplash.com/photo-1588665306984-d5c6f62224aa?w=800" }
   },
   results: {
     bgColor: "#05668D",
-    stat1: { value: "", label: "", sub: "" },
-    stat2: { value: "", label: "", sub: "" },
-    stat3: { value: "", label: "", sub: "" }
+    stat1: { value: "1,018+", label: "Complexes", sub: "전세대 일괄시공" },
+    stat2: { value: "50+", label: "Teams", sub: "전문 시공팀" },
+    stat3: { value: "20", label: "Years", sub: "축적된 노하우" }
   },
-  contact: { phone: "", email: "", address: "" },
-  theme: { primaryColor: "#05668D", secondaryColor: "#00A896" }
+  contact: {
+    phone: "043-222-2322", email: "info@knst.co.kr", address: "충북 청주시 흥덕구 공단로134"
+  },
+  theme: {
+    primaryColor: "#05668D", secondaryColor: "#00A896"
+  }
 };
 
-// --- [Toast Component] ---
+// --- [Toast 알림 컴포넌트] ---
 const Toast = ({ message, type, onClose }: any) => (
   <motion.div
     initial={{ opacity: 0, y: -50, x: 50 }}
@@ -60,30 +68,34 @@ const Toast = ({ message, type, onClose }: any) => (
 );
 
 export const AdminPage = () => {
-  // --- [State] ---
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  // 초기값을 null이 아닌 defaultData로 설정하여 로딩 화면 멈춤 방지
+  const [data, setData] = useState<any>(defaultData);
+  const [loading, setLoading] = useState(false); // 로딩 상태 제거 (즉시 렌더링)
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: string } | null>(null);
-  const [activeTab, setActiveTab] = useState('hero'); // 현재 선택된 탭
+  const [activeTab, setActiveTab] = useState('hero');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // --- [Effects] ---
+  // DB 실시간 연동
   useEffect(() => {
-    const unsub = onSnapshot(doc(db, "site_config", "main"), (docSnap) => {
-      if (docSnap.exists()) {
-        setData({ ...defaultData, ...docSnap.data() });
-      } else {
-        setDoc(docSnap.ref, defaultData);
-        setData(defaultData);
+    const unsub = onSnapshot(doc(db, "site_config", "main"), 
+      (docSnap) => {
+        if (docSnap.exists()) {
+          setData({ ...defaultData, ...docSnap.data() });
+        } else {
+          // 데이터가 없으면 기본값으로 생성 시도
+          setDoc(docSnap.ref, defaultData).catch(err => console.error("Init DB Error:", err));
+        }
+      },
+      (error) => {
+        console.error("DB Connection Error:", error);
+        showToast("DB 연결 실패. 기본 모드로 동작합니다.", "error");
       }
-      setLoading(false);
-    });
+    );
     return () => unsub();
   }, []);
 
-  // --- [Handlers] ---
   const showToast = (message: string, type: 'success' | 'error') => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3000);
@@ -93,12 +105,11 @@ export const AdminPage = () => {
     setSaving(true);
     try {
       const docRef = doc(db, "site_config", "main");
-      // 중첩 객체 업데이트를 위한 dot notation 처리
       await updateDoc(docRef, { [fieldPath]: value });
-      showToast('설정이 저장되었습니다.', 'success');
+      showToast('저장되었습니다.', 'success');
     } catch (error) {
       console.error(error);
-      showToast('저장에 실패했습니다.', 'error');
+      showToast('저장 실패 (권한/네트워크 확인)', 'error');
     } finally {
       setSaving(false);
     }
@@ -109,7 +120,7 @@ export const AdminPage = () => {
     if (!file) return;
     
     if (file.size > 5 * 1024 * 1024) {
-      showToast('파일 크기는 5MB 이하여야 합니다', 'error');
+      showToast('5MB 이하 이미지만 가능합니다', 'error');
       return;
     }
     
@@ -119,23 +130,21 @@ export const AdminPage = () => {
       await uploadBytes(imageRef, file);
       const url = await getDownloadURL(imageRef);
       await saveField(fieldPath, url);
-      showToast('이미지가 업로드되었습니다.', 'success');
+      showToast('이미지 업로드 성공!', 'success');
     } catch (error) {
-      showToast('이미지 업로드 실패', 'error');
+      showToast('업로드 실패 (Storage 권한 확인)', 'error');
     } finally {
       setUploading(false);
     }
   };
 
-  // --- [Helper Components] ---
-  const InputGroup = ({ label, path, type = "text", placeholder = "", description = "" }: any) => {
-    // path를 이용해 현재 data에서 값을 안전하게 추출
-    const getValue = (obj: any, path: string) => {
-      return path.split('.').reduce((o, i) => (o ? o[i] : ""), obj);
-    };
-    
-    const currentValue = data ? getValue(data, path) : "";
+  // 안전한 값 접근 헬퍼
+  const getValue = (obj: any, path: string) => {
+    return path.split('.').reduce((o, i) => (o ? o[i] : ""), obj) || "";
+  };
 
+  const InputGroup = ({ label, path, type = "text", placeholder = "", description = "" }: any) => {
+    const currentValue = getValue(data, path);
     return (
       <div className="space-y-2 group">
         <div className="flex items-center justify-between">
@@ -144,25 +153,23 @@ export const AdminPage = () => {
           </Label>
           {description && <span className="text-xs text-slate-400">{description}</span>}
         </div>
-        <div className="flex gap-2">
-          {type === "textarea" ? (
-            <Textarea 
-              defaultValue={currentValue}
-              key={currentValue} // 키 변경으로 리렌더링 유도하여 값 갱신 보장
-              className="min-h-[80px] bg-white border-slate-200 focus:border-[#00A896] focus:ring-[#00A896]/20 resize-none transition-all"
-              onBlur={(e) => saveField(path, e.target.value)}
-            />
-          ) : (
-            <Input 
-              type={type}
-              defaultValue={currentValue}
-              key={currentValue}
-              placeholder={placeholder}
-              className="bg-white border-slate-200 focus:border-[#00A896] focus:ring-[#00A896]/20 transition-all"
-              onBlur={(e) => saveField(path, e.target.value)}
-            />
-          )}
-        </div>
+        {type === "textarea" ? (
+          <Textarea 
+            defaultValue={currentValue}
+            key={`area-${currentValue}`} // 키 변경으로 강제 리렌더링 (값 동기화)
+            className="min-h-[80px] bg-white border-slate-200 focus:border-[#00A896] focus:ring-[#00A896]/20 resize-none"
+            onBlur={(e) => saveField(path, e.target.value)}
+          />
+        ) : (
+          <Input 
+            type={type}
+            defaultValue={currentValue}
+            key={`input-${currentValue}`}
+            placeholder={placeholder}
+            className="bg-white border-slate-200 focus:border-[#00A896] focus:ring-[#00A896]/20"
+            onBlur={(e) => saveField(path, e.target.value)}
+          />
+        )}
       </div>
     );
   };
@@ -183,7 +190,6 @@ export const AdminPage = () => {
         <label className="absolute inset-0 flex flex-col items-center justify-center bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer text-white">
           <UploadCloud size={32} className="mb-2" />
           <span className="font-bold text-sm">이미지 변경</span>
-          <span className="text-[10px] opacity-80 mt-1">Click to upload</span>
           <input type="file" className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, fieldPath)} />
         </label>
 
@@ -196,7 +202,7 @@ export const AdminPage = () => {
     </div>
   );
 
-  // --- [Navigation Items] ---
+  // 메뉴 아이템 정의
   const menuItems = [
     { id: 'hero', label: '메인 히어로', icon: Monitor, desc: '첫 화면 이미지 및 문구' },
     { id: 'whynst', label: 'Why NST', icon: CheckCircle2, desc: '특장점 섹션 관리' },
@@ -204,26 +210,13 @@ export const AdminPage = () => {
     { id: 'contact', label: '연락처 & 테마', icon: Palette, desc: '기본 정보 및 색상' },
   ];
 
-  if (loading || !data) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-slate-50">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="animate-spin text-[#00A896] w-10 h-10" />
-          <p className="text-slate-500 font-medium">관리자 설정 로딩중...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // --- [Render Logic] ---
   return (
-    <div className="flex h-screen bg-[#F8FAFC] overflow-hidden">
-      {/* Toast Container */}
+    <div className="flex h-screen bg-[#F8FAFC] overflow-hidden font-sans">
       <AnimatePresence>
         {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       </AnimatePresence>
 
-      {/* === Sidebar (Desktop) === */}
+      {/* === 좌측 사이드바 (Desktop) === */}
       <aside className="hidden md:flex w-72 flex-col bg-white border-r border-slate-200 h-full shadow-sm z-20">
         <div className="p-6 border-b border-slate-100 flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-[#05668D] to-[#00A896] rounded-xl flex items-center justify-center shadow-lg shadow-[#05668D]/20">
@@ -231,7 +224,7 @@ export const AdminPage = () => {
           </div>
           <div>
             <h1 className="font-bold text-lg text-slate-800 tracking-tight">KNST Admin</h1>
-            <p className="text-xs text-slate-400 font-medium">Dashboard v1.0</p>
+            <p className="text-xs text-slate-400 font-medium">Dashboard</p>
           </div>
         </div>
 
@@ -275,10 +268,10 @@ export const AdminPage = () => {
         </div>
       </aside>
 
-      {/* === Main Content Area === */}
+      {/* === 메인 콘텐츠 영역 === */}
       <main className="flex-1 flex flex-col h-full overflow-hidden relative">
         
-        {/* Mobile Header */}
+        {/* 모바일 헤더 */}
         <header className="md:hidden h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 shrink-0 z-20">
           <div className="flex items-center gap-2">
              <div className="w-8 h-8 bg-[#05668D] rounded-lg flex items-center justify-center">
@@ -286,7 +279,7 @@ export const AdminPage = () => {
              </div>
              <span className="font-bold text-slate-800">KNST Admin</span>
           </div>
-          <Sheet>
+          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon"><Menu /></Button>
             </SheetTrigger>
@@ -312,11 +305,11 @@ export const AdminPage = () => {
           </Sheet>
         </header>
 
-        {/* Content Scroll Area */}
+        {/* 콘텐츠 스크롤 영역 */}
         <div className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-12 bg-[#F8FAFC]">
           <div className="max-w-5xl mx-auto pb-20">
             
-            {/* Header for the active section */}
+            {/* 현재 섹션 헤더 */}
             <div className="mb-8">
               <h2 className="text-3xl font-bold text-slate-800 mb-2 flex items-center gap-3">
                 {menuItems.find(m => m.id === activeTab)?.icon && React.createElement(menuItems.find(m => m.id === activeTab)!.icon, { size: 32, className: "text-[#00A896]" })}
@@ -331,7 +324,7 @@ export const AdminPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
-              {/* --- [1] Hero Section Settings --- */}
+              {/* --- [Hero 설정] --- */}
               {activeTab === 'hero' && (
                 <div className="grid lg:grid-cols-3 gap-8">
                   <Card className="lg:col-span-2 shadow-sm border-slate-200">
@@ -340,26 +333,26 @@ export const AdminPage = () => {
                       <CardDescription>메인 화면의 문구를 수정합니다.</CardDescription>
                     </CardHeader>
                     <CardContent className="p-6 space-y-6">
-                       <InputGroup label="메인 타이틀" path="hero.title" type="textarea" description="가장 크게 보이는 제목입니다." />
+                       <InputGroup label="메인 타이틀" path="hero.title" type="textarea" />
                        <div className="grid grid-cols-2 gap-4">
-                          <InputGroup label="글자 크기(px)" path="hero.titleSize" type="number" />
+                          <InputGroup label="크기(px)" path="hero.titleSize" type="number" />
                           <div className="space-y-2">
-                            <Label className="text-sm font-bold text-slate-700">글자 색상</Label>
+                            <Label className="text-sm font-bold text-slate-700">색상</Label>
                             <div className="flex gap-2">
-                              <Input type="color" defaultValue={data.hero.titleColor} className="w-12 h-10 p-1 cursor-pointer" onBlur={(e) => saveField('hero.titleColor', e.target.value)} />
-                              <Input defaultValue={data.hero.titleColor} className="flex-1" disabled />
+                              <Input type="color" defaultValue={getValue(data, 'hero.titleColor')} className="w-12 h-10 p-1 cursor-pointer" onBlur={(e) => saveField('hero.titleColor', e.target.value)} />
+                              <Input defaultValue={getValue(data, 'hero.titleColor')} className="flex-1" disabled />
                             </div>
                           </div>
                        </div>
                        <div className="h-px bg-slate-100 my-2" />
-                       <InputGroup label="서브 타이틀" path="hero.subtitle" type="textarea" description="제목 아래의 보조 설명입니다." />
+                       <InputGroup label="서브 타이틀" path="hero.subtitle" type="textarea" />
                        <div className="grid grid-cols-2 gap-4">
-                          <InputGroup label="글자 크기(px)" path="hero.subtitleSize" type="number" />
+                          <InputGroup label="크기(px)" path="hero.subtitleSize" type="number" />
                           <div className="space-y-2">
-                            <Label className="text-sm font-bold text-slate-700">글자 색상</Label>
+                            <Label className="text-sm font-bold text-slate-700">색상</Label>
                             <div className="flex gap-2">
-                              <Input type="color" defaultValue={data.hero.subtitleColor} className="w-12 h-10 p-1 cursor-pointer" onBlur={(e) => saveField('hero.subtitleColor', e.target.value)} />
-                              <Input defaultValue={data.hero.subtitleColor} className="flex-1" disabled />
+                              <Input type="color" defaultValue={getValue(data, 'hero.subtitleColor')} className="w-12 h-10 p-1 cursor-pointer" onBlur={(e) => saveField('hero.subtitleColor', e.target.value)} />
+                              <Input defaultValue={getValue(data, 'hero.subtitleColor')} className="flex-1" disabled />
                             </div>
                           </div>
                        </div>
@@ -374,21 +367,16 @@ export const AdminPage = () => {
                       <CardContent className="p-6 pt-0">
                         <ImageUploadCard 
                           title="Hero Background"
-                          currentImage={data.hero.bgImage}
+                          currentImage={getValue(data, 'hero.bgImage')}
                           fieldPath="hero.bgImage"
                         />
                       </CardContent>
                     </Card>
-                    
-                    <div className="bg-[#E6FFFA] p-4 rounded-xl border border-[#00A896]/20 text-[#006d62] text-sm">
-                      <div className="font-bold mb-1 flex items-center gap-1"><CheckCircle2 size={14}/> Tip</div>
-                      배경 이미지는 어두운 톤이나 오버레이가 적용된 이미지를 사용하는 것이 텍스트 가독성에 좋습니다.
-                    </div>
                   </div>
                 </div>
               )}
 
-              {/* --- [2] Why NST Settings --- */}
+              {/* --- [Why NST 설정] --- */}
               {activeTab === 'whynst' && (
                 <div className="space-y-8">
                   <Card className="shadow-sm border-slate-200">
@@ -401,8 +389,8 @@ export const AdminPage = () => {
                       <div className="space-y-2">
                          <Label className="text-sm font-bold text-slate-700">제목 색상</Label>
                          <div className="flex gap-2">
-                           <Input type="color" defaultValue={data.whyNST.titleColor} className="w-12 h-10 p-1 cursor-pointer" onBlur={(e) => saveField('whyNST.titleColor', e.target.value)} />
-                           <Input defaultValue={data.whyNST.titleColor} className="flex-1" disabled />
+                           <Input type="color" defaultValue={getValue(data, 'whyNST.titleColor')} className="w-12 h-10 p-1 cursor-pointer" onBlur={(e) => saveField('whyNST.titleColor', e.target.value)} />
+                           <Input defaultValue={getValue(data, 'whyNST.titleColor')} className="flex-1" disabled />
                          </div>
                       </div>
                       <InputGroup label="카드 높이(px)" path="whyNST.cardHeight" type="number" />
@@ -420,13 +408,13 @@ export const AdminPage = () => {
                         </CardHeader>
                         <CardContent className="p-4 space-y-4">
                           <ImageUploadCard 
-                            title="카드 배경 이미지"
-                            currentImage={data.whyNST[card].image}
+                            title="이미지"
+                            currentImage={getValue(data, `whyNST.${card}.image`)}
                             fieldPath={`whyNST.${card}.image`}
                           />
                           <div className="h-px bg-slate-100 my-2" />
-                          <InputGroup label="카드 제목" path={`whyNST.${card}.title`} />
-                          <InputGroup label="카드 내용" path={`whyNST.${card}.desc`} type="textarea" />
+                          <InputGroup label="제목" path={`whyNST.${card}.title`} />
+                          <InputGroup label="내용" path={`whyNST.${card}.desc`} type="textarea" />
                         </CardContent>
                       </Card>
                     ))}
@@ -434,21 +422,18 @@ export const AdminPage = () => {
                 </div>
               )}
 
-              {/* --- [3] Results Settings --- */}
+              {/* --- [Results 설정] --- */}
               {activeTab === 'results' && (
                 <div className="space-y-8">
                   <Card className="shadow-sm border-slate-200 bg-white">
-                     <CardHeader>
-                       <CardTitle>배경 스타일</CardTitle>
-                     </CardHeader>
+                     <CardHeader><CardTitle>배경 스타일</CardTitle></CardHeader>
                      <CardContent className="p-6">
                         <div className="max-w-xs space-y-2">
                            <Label className="text-sm font-bold text-slate-700">배경 색상</Label>
                            <div className="flex gap-2">
-                             <Input type="color" defaultValue={data.results.bgColor} className="w-12 h-10 p-1 cursor-pointer" onBlur={(e) => saveField('results.bgColor', e.target.value)} />
-                             <Input defaultValue={data.results.bgColor} className="flex-1" disabled />
+                             <Input type="color" defaultValue={getValue(data, 'results.bgColor')} className="w-12 h-10 p-1 cursor-pointer" onBlur={(e) => saveField('results.bgColor', e.target.value)} />
+                             <Input defaultValue={getValue(data, 'results.bgColor')} className="flex-1" disabled />
                            </div>
-                           <p className="text-xs text-slate-400">섹션 전체의 배경색을 결정합니다.</p>
                         </div>
                      </CardContent>
                   </Card>
@@ -457,9 +442,7 @@ export const AdminPage = () => {
                      {['stat1', 'stat2', 'stat3'].map((stat, idx) => (
                        <Card key={stat} className="shadow-sm border-slate-200 relative overflow-hidden">
                           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#05668D] to-[#00A896]" />
-                          <CardHeader>
-                             <CardTitle className="text-center text-lg">통계 지표 {idx + 1}</CardTitle>
-                          </CardHeader>
+                          <CardHeader><CardTitle className="text-center text-lg">통계 지표 {idx + 1}</CardTitle></CardHeader>
                           <CardContent className="space-y-4 p-6">
                              <InputGroup label="강조 숫자" path={`results.${stat}.value`} placeholder="예: 1,000+" />
                              <InputGroup label="라벨(영문)" path={`results.${stat}.label`} placeholder="PROJECTS" />
@@ -471,7 +454,7 @@ export const AdminPage = () => {
                 </div>
               )}
 
-              {/* --- [4] Contact & Theme Settings --- */}
+              {/* --- [Contact & Theme 설정] --- */}
               {activeTab === 'contact' && (
                 <div className="grid lg:grid-cols-2 gap-8">
                    <Card className="shadow-sm border-slate-200 h-fit">
@@ -480,11 +463,10 @@ export const AdminPage = () => {
                            <div className="p-2 bg-[#00A896]/10 rounded-lg text-[#00A896]"><Mail size={18} /></div>
                            <CardTitle>연락처 정보</CardTitle>
                          </div>
-                         <CardDescription>하단 푸터 및 연락처 섹션에 표시될 정보입니다.</CardDescription>
                       </CardHeader>
                       <CardContent className="p-6 space-y-5">
-                         <InputGroup label="대표 전화번호" path="contact.phone" />
-                         <InputGroup label="이메일 주소" path="contact.email" />
+                         <InputGroup label="전화번호" path="contact.phone" />
+                         <InputGroup label="이메일" path="contact.email" />
                          <InputGroup label="주소" path="contact.address" type="textarea" />
                       </CardContent>
                    </Card>
@@ -493,35 +475,28 @@ export const AdminPage = () => {
                       <CardHeader className="border-b border-slate-100 bg-slate-50/50">
                          <div className="flex items-center gap-2">
                            <div className="p-2 bg-[#05668D]/10 rounded-lg text-[#05668D]"><Palette size={18} /></div>
-                           <CardTitle>테마 컬러 설정</CardTitle>
+                           <CardTitle>테마 컬러</CardTitle>
                          </div>
-                         <CardDescription>웹사이트 전체의 브랜드 컬러를 설정합니다.</CardDescription>
                       </CardHeader>
                       <CardContent className="p-6 space-y-8">
                          <div className="space-y-3">
-                            <Label className="text-sm font-bold text-slate-700">Primary Color (메인)</Label>
+                            <Label className="text-sm font-bold text-slate-700">Primary (메인)</Label>
                             <div className="flex gap-3 items-center">
-                               <div className="w-16 h-16 rounded-xl shadow-inner border border-slate-200" style={{ backgroundColor: data.theme.primaryColor }} />
-                               <div className="flex-1 space-y-2">
-                                 <div className="flex gap-2">
-                                   <Input type="color" defaultValue={data.theme.primaryColor} className="w-10 h-10 p-1 cursor-pointer" onBlur={(e) => saveField('theme.primaryColor', e.target.value)} />
-                                   <Input defaultValue={data.theme.primaryColor} className="font-mono uppercase" disabled />
-                                 </div>
-                                 <p className="text-xs text-slate-400">헤더, 주요 버튼, 강조 텍스트 등에 사용됩니다.</p>
+                               <div className="w-16 h-16 rounded-xl shadow-inner border border-slate-200" style={{ backgroundColor: getValue(data, 'theme.primaryColor') }} />
+                               <div className="flex-1 flex gap-2">
+                                 <Input type="color" defaultValue={getValue(data, 'theme.primaryColor')} className="w-10 h-10 p-1 cursor-pointer" onBlur={(e) => saveField('theme.primaryColor', e.target.value)} />
+                                 <Input defaultValue={getValue(data, 'theme.primaryColor')} disabled />
                                </div>
                             </div>
                          </div>
 
                          <div className="space-y-3">
-                            <Label className="text-sm font-bold text-slate-700">Secondary Color (보조)</Label>
+                            <Label className="text-sm font-bold text-slate-700">Secondary (보조)</Label>
                             <div className="flex gap-3 items-center">
-                               <div className="w-16 h-16 rounded-xl shadow-inner border border-slate-200" style={{ backgroundColor: data.theme.secondaryColor }} />
-                               <div className="flex-1 space-y-2">
-                                 <div className="flex gap-2">
-                                   <Input type="color" defaultValue={data.theme.secondaryColor} className="w-10 h-10 p-1 cursor-pointer" onBlur={(e) => saveField('theme.secondaryColor', e.target.value)} />
-                                   <Input defaultValue={data.theme.secondaryColor} className="font-mono uppercase" disabled />
-                                 </div>
-                                 <p className="text-xs text-slate-400">포인트 요소, 아이콘, 그라데이션 등에 사용됩니다.</p>
+                               <div className="w-16 h-16 rounded-xl shadow-inner border border-slate-200" style={{ backgroundColor: getValue(data, 'theme.secondaryColor') }} />
+                               <div className="flex-1 flex gap-2">
+                                 <Input type="color" defaultValue={getValue(data, 'theme.secondaryColor')} className="w-10 h-10 p-1 cursor-pointer" onBlur={(e) => saveField('theme.secondaryColor', e.target.value)} />
+                                 <Input defaultValue={getValue(data, 'theme.secondaryColor')} disabled />
                                </div>
                             </div>
                          </div>
@@ -529,7 +504,6 @@ export const AdminPage = () => {
                    </Card>
                 </div>
               )}
-
             </motion.div>
           </div>
         </div>
