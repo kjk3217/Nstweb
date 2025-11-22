@@ -1,12 +1,16 @@
 import React from 'react';
-import { User, Calendar, Target, Award, MapPin, Phone, Mail } from 'lucide-react';
+import { Phone, Mail, MapPin } from 'lucide-react';
+import { useContent } from '../../context/ContentContext';
 
 export const ContactSection = () => {
+  const { content } = useContent();
+  const data = content?.contact || {};
+
   return (
     <section id="contact" className="relative py-24 bg-slate-900">
       <div className="absolute inset-0 z-0">
          <img 
-           src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=2000" 
+           src={data.bgImage} 
            alt="City Background" 
            className="w-full h-full object-cover opacity-20 blur-sm"
          />
@@ -16,9 +20,9 @@ export const ContactSection = () => {
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         <div className="max-w-4xl mx-auto bg-[#00A896] rounded-3xl overflow-hidden shadow-2xl relative">
            <div className="p-12 text-white text-center relative z-10">
-             <h2 className="text-4xl font-bold mb-6">Contact Us</h2>
+             <h2 className="text-4xl font-bold mb-6">{data.title}</h2>
              <p className="text-white/90 mb-12 max-w-2xl mx-auto text-lg leading-relaxed">
-               Ready to create a healthier environment? Reach out to our expert team for a consultation.
+               {data.desc}
              </p>
              
              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -28,7 +32,7 @@ export const ContactSection = () => {
                    </div>
                    <div>
                      <p className="text-sm opacity-80 uppercase tracking-wider mb-1">Phone</p>
-                     <p className="text-xl font-bold">043-222-2322</p>
+                     <p className="text-xl font-bold">{data.phone}</p>
                    </div>
                 </div>
                 
@@ -38,7 +42,7 @@ export const ContactSection = () => {
                    </div>
                    <div>
                      <p className="text-sm opacity-80 uppercase tracking-wider mb-1">Email</p>
-                     <p className="text-xl font-bold">info@knst.co.kr</p>
+                     <p className="text-xl font-bold">{data.email}</p>
                    </div>
                 </div>
                 
@@ -48,13 +52,11 @@ export const ContactSection = () => {
                    </div>
                    <div>
                      <p className="text-sm opacity-80 uppercase tracking-wider mb-1">KakaoTalk</p>
-                     <p className="text-xl font-bold">@NST공법</p>
+                     <p className="text-xl font-bold">{data.kakao}</p>
                    </div>
                 </div>
              </div>
            </div>
-
-           {/* Decorative Elements */}
            <div className="absolute -top-24 -left-24 w-64 h-64 bg-[#02C39A]/40 rounded-full blur-3xl" />
            <div className="absolute -bottom-24 -right-24 w-80 h-80 bg-[#05668D]/40 rounded-full blur-3xl" />
         </div>
