@@ -15,8 +15,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
-// --- [1. 초기 기본 데이터 정의] ---
-// DB 연결 실패 시에도 이 데이터로 화면을 먼저 그립니다.
+// --- [1. 초기 기본 데이터] ---
 const defaultData = {
   hero: {
     title: "20년 축적된 노하우, 대형 건설사가 선택한 기술",
@@ -47,7 +46,7 @@ const defaultData = {
   }
 };
 
-// --- [Toast 알림 컴포넌트] ---
+// --- [Toast 알림] ---
 const Toast = ({ message, type, onClose }: any) => (
   <motion.div
     initial={{ opacity: 0, y: -50, x: 50 }}
@@ -68,9 +67,7 @@ const Toast = ({ message, type, onClose }: any) => (
 );
 
 export const AdminPage = () => {
-  // 초기값을 null이 아닌 defaultData로 설정하여 로딩 화면 멈춤 방지
   const [data, setData] = useState<any>(defaultData);
-  const [loading, setLoading] = useState(false); // 로딩 상태 제거 (즉시 렌더링)
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: string } | null>(null);
@@ -84,13 +81,12 @@ export const AdminPage = () => {
         if (docSnap.exists()) {
           setData({ ...defaultData, ...docSnap.data() });
         } else {
-          // 데이터가 없으면 기본값으로 생성 시도
-          setDoc(docSnap.ref, defaultData).catch(err => console.error("Init DB Error:", err));
+          setDoc(docSnap.ref, defaultData).catch(err => console.error(err));
         }
       },
       (error) => {
-        console.error("DB Connection Error:", error);
-        showToast("DB 연결 실패. 기본 모드로 동작합니다.", "error");
+        console.error("DB Error:", error);
+        showToast("DB 연결 실패 (기본 모드)", "error");
       }
     );
     return () => unsub();
@@ -109,7 +105,7 @@ export const AdminPage = () => {
       showToast('저장되었습니다.', 'success');
     } catch (error) {
       console.error(error);
-      showToast('저장 실패 (권한/네트워크 확인)', 'error');
+      showToast('저장 실패', 'error');
     } finally {
       setSaving(false);
     }
@@ -132,13 +128,12 @@ export const AdminPage = () => {
       await saveField(fieldPath, url);
       showToast('이미지 업로드 성공!', 'success');
     } catch (error) {
-      showToast('업로드 실패 (Storage 권한 확인)', 'error');
+      showToast('업로드 실패 (권한 확인)', 'error');
     } finally {
       setUploading(false);
     }
   };
 
-  // 안전한 값 접근 헬퍼
   const getValue = (obj: any, path: string) => {
     return path.split('.').reduce((o, i) => (o ? o[i] : ""), obj) || "";
   };
@@ -156,7 +151,7 @@ export const AdminPage = () => {
         {type === "textarea" ? (
           <Textarea 
             defaultValue={currentValue}
-            key={`area-${currentValue}`} // 키 변경으로 강제 리렌더링 (값 동기화)
+            key={`area-${currentValue}`} 
             className="min-h-[80px] bg-white border-slate-200 focus:border-[#00A896] focus:ring-[#00A896]/20 resize-none"
             onBlur={(e) => saveField(path, e.target.value)}
           />
@@ -202,7 +197,6 @@ export const AdminPage = () => {
     </div>
   );
 
-  // 메뉴 아이템 정의
   const menuItems = [
     { id: 'hero', label: '메인 히어로', icon: Monitor, desc: '첫 화면 이미지 및 문구' },
     { id: 'whynst', label: 'Why NST', icon: CheckCircle2, desc: '특장점 섹션 관리' },
@@ -211,13 +205,14 @@ export const AdminPage = () => {
   ];
 
   return (
-    <div className="flex h-screen bg-[#F8FAFC] overflow-hidden font-sans">
+    // 수정 포인트: h-[100dvh]로 모바일 브라우저 높이 대응
+    <div className="flex h-[100dvh] bg-[#F8FAFC] overflow-hidden font-sans">
       <AnimatePresence>
         {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
       </AnimatePresence>
 
-      {/* === 좌측 사이드바 (Desktop) === */}
-      <aside className="hidden md:flex w-72 flex-col bg-white border-r border-slate-200 h-full shadow-sm z-20">
+      {/* === Sidebar (Desktop) === */}
+      <aside className="hidden md:flex w-72 flex-col bg-white border-r border-slate-200 h-full shadow-sm z-20 shrink-0">
         <div className="p-6 border-b border-slate-100 flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-[#05668D] to-[#00A896] rounded-xl flex items-center justify-center shadow-lg shadow-[#05668D]/20">
             <LayoutTemplate className="text-white" size={20} />
@@ -255,7 +250,7 @@ export const AdminPage = () => {
             onClick={() => window.open('/', '_blank')}
           >
             <Eye size={16} />
-            사이트 미리보기
+            미리보기
           </Button>
           <Button 
             variant="ghost" 
@@ -268,10 +263,11 @@ export const AdminPage = () => {
         </div>
       </aside>
 
-      {/* === 메인 콘텐츠 영역 === */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden relative">
+      {/* === Main Content Area === */}
+      {/* 수정 포인트: min-h-0 추가하여 flex 자식의 스크롤 동작 보장 */}
+      <main className="flex-1 flex flex-col h-full min-h-0 overflow-hidden relative">
         
-        {/* 모바일 헤더 */}
+        {/* Mobile Header */}
         <header className="md:hidden h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 shrink-0 z-20">
           <div className="flex items-center gap-2">
              <div className="w-8 h-8 bg-[#05668D] rounded-lg flex items-center justify-center">
@@ -305,11 +301,11 @@ export const AdminPage = () => {
           </Sheet>
         </header>
 
-        {/* 콘텐츠 스크롤 영역 */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-8 lg:p-12 bg-[#F8FAFC]">
-          <div className="max-w-5xl mx-auto pb-20">
+        {/* Content Scroll Area */}
+        {/* 수정 포인트: pb-40으로 하단 여백을 크게 주어 내용이 잘리지 않게 함 */}
+        <div className="flex-1 min-h-0 overflow-y-auto p-4 md:p-8 lg:p-12 bg-[#F8FAFC] scroll-smooth">
+          <div className="max-w-5xl mx-auto pb-40">
             
-            {/* 현재 섹션 헤더 */}
             <div className="mb-8">
               <h2 className="text-3xl font-bold text-slate-800 mb-2 flex items-center gap-3">
                 {menuItems.find(m => m.id === activeTab)?.icon && React.createElement(menuItems.find(m => m.id === activeTab)!.icon, { size: 32, className: "text-[#00A896]" })}
@@ -324,7 +320,7 @@ export const AdminPage = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
-              {/* --- [Hero 설정] --- */}
+              {/* [Hero] */}
               {activeTab === 'hero' && (
                 <div className="grid lg:grid-cols-3 gap-8">
                   <Card className="lg:col-span-2 shadow-sm border-slate-200">
@@ -376,7 +372,7 @@ export const AdminPage = () => {
                 </div>
               )}
 
-              {/* --- [Why NST 설정] --- */}
+              {/* [Why NST] */}
               {activeTab === 'whynst' && (
                 <div className="space-y-8">
                   <Card className="shadow-sm border-slate-200">
@@ -422,7 +418,7 @@ export const AdminPage = () => {
                 </div>
               )}
 
-              {/* --- [Results 설정] --- */}
+              {/* [Results] */}
               {activeTab === 'results' && (
                 <div className="space-y-8">
                   <Card className="shadow-sm border-slate-200 bg-white">
@@ -454,7 +450,7 @@ export const AdminPage = () => {
                 </div>
               )}
 
-              {/* --- [Contact & Theme 설정] --- */}
+              {/* [Contact] */}
               {activeTab === 'contact' && (
                 <div className="grid lg:grid-cols-2 gap-8">
                    <Card className="shadow-sm border-slate-200 h-fit">
