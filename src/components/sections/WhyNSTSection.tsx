@@ -1,32 +1,36 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Layers, Building2, CheckCircle2 } from 'lucide-react';
-
-const cards = [
-  {
-    icon: Layers,
-    title: "One-Stop System",
-    desc: "Complete solution from materials manufacturing to professional installation.",
-    color: "from-[#00A896] to-[#02C39A]",
-    image: "https://images.unsplash.com/photo-1760970237216-17a474403b5c?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb25zdHJ1Y3Rpb24lMjB3b3JrZXIlMjBzYWZldHklMjBnZWFyJTIwaGVsbWV0fGVufDF8fHx8MTc2MzcwNTEyMXww&ixlib=rb-4.1.0&q=80&w=1080"
-  },
-  {
-    icon: Building2,
-    title: "Major Partnerships",
-    desc: "Trusted partner for 1,018+ verified projects with top construction firms.",
-    color: "from-[#05668D] to-[#00A896]",
-    image: "https://images.unsplash.com/photo-1653016380323-a4496cbe3cf0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb25zdHJ1Y3Rpb24lMjBzaXRlJTIwYnVpbGRpbmclMjBhcGFydG1lbnRzJTIwa29yZWF8ZW58MXx8fHwxNzYzNzA1MTIwfDA&ixlib=rb-4.1.0&q=80&w=1080"
-  },
-  {
-    icon: CheckCircle2,
-    title: "20 Years Experience",
-    desc: "Customized 3-step process refined over two decades of field experience.",
-    color: "from-[#F0A202] to-[#FFD700]",
-    image: "https://images.unsplash.com/photo-1588665306984-d5c6f62224aa?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzY2llbnRpc3QlMjBsYWIlMjBjb2F0JTIwcmVzZWFyY2glMjBtaWNyb3Njb3BlfGVufDF8fHx8MTc2MzcwNTEyMHww&ixlib=rb-4.1.0&q=80&w=1080"
-  }
-];
+import { useContent } from '../../context/ContentContext';
 
 export const WhyNSTSection = () => {
+  const { content } = useContent();
+  const data = content?.why || {};
+
+  const cards = [
+    {
+      icon: Layers,
+      title: data.card1Title,
+      desc: data.card1Desc,
+      color: "from-[#00A896] to-[#02C39A]",
+      image: data.card1Image
+    },
+    {
+      icon: Building2,
+      title: data.card2Title,
+      desc: data.card2Desc,
+      color: "from-[#05668D] to-[#00A896]",
+      image: data.card2Image
+    },
+    {
+      icon: CheckCircle2,
+      title: data.card3Title,
+      desc: data.card3Desc,
+      color: "from-[#F0A202] to-[#FFD700]",
+      image: data.card3Image
+    }
+  ];
+
   return (
     <section id="method" className="py-24 bg-slate-50">
       <div className="container mx-auto px-4 md:px-6">
@@ -37,7 +41,7 @@ export const WhyNSTSection = () => {
             viewport={{ once: true }}
             className="text-3xl md:text-4xl font-bold text-[#05668D] mb-4"
           >
-            Why Choose NST Method?
+            {data.title}
           </motion.h2>
           <motion.p 
             initial={{ opacity: 0, y: 20 }}
@@ -46,7 +50,7 @@ export const WhyNSTSection = () => {
             transition={{ delay: 0.1 }}
             className="text-slate-600 max-w-2xl mx-auto"
           >
-            We combine advanced technology with eco-friendly materials to provide the safest indoor environment.
+            {data.desc}
           </motion.p>
         </div>
 
@@ -61,7 +65,6 @@ export const WhyNSTSection = () => {
               whileHover={{ y: -10, transition: { duration: 0.3 } }}
               className="group relative h-[400px] rounded-xl overflow-hidden shadow-xl bg-white cursor-pointer"
             >
-              {/* Background Image with Overlay */}
               <div className="absolute inset-0">
                 <img 
                   src={card.image} 
@@ -71,7 +74,6 @@ export const WhyNSTSection = () => {
                 <div className={`absolute inset-0 bg-gradient-to-b ${card.color} opacity-80 mix-blend-multiply transition-opacity group-hover:opacity-90`} />
               </div>
 
-              {/* Content */}
               <div className="relative z-10 h-full p-8 flex flex-col justify-between text-white">
                 <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 group-hover:bg-white group-hover:text-[#00A896] transition-all duration-300">
                   <card.icon size={32} />
