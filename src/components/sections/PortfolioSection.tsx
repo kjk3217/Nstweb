@@ -2,26 +2,27 @@ import React, { useState } from 'react';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ZoomIn } from 'lucide-react';
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
-
-const projects = [
-  { id: 1, title: "Gangnam Prugio Summit", category: "Seoul", year: "2024", builder: "Daewoo E&C", img: "https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&q=80&w=800" },
-  { id: 2, title: "Busan LCT The Sharp", category: "Busan", year: "2023", builder: "POSCO E&C", img: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&q=80&w=800" },
-  { id: 3, title: "Raemian One Bailey", category: "Seoul", year: "2024", builder: "Samsung C&T", img: "https://images.unsplash.com/photo-1600566753086-00f18fb6b3ea?auto=format&fit=crop&q=80&w=800" },
-  { id: 4, title: "Hillstate Ijin Bay City", category: "Busan", year: "2023", builder: "Hyundai E&C", img: "https://images.unsplash.com/photo-1600210492493-0946911123ea?auto=format&fit=crop&q=80&w=800" },
-  { id: 5, title: "Songdo Xi Crystal", category: "Incheon", year: "2022", builder: "GS E&C", img: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&q=80&w=800" },
-  { id: 6, title: "Acroriver Park", category: "Seoul", year: "2023", builder: "DL E&C", img: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&q=80&w=800" },
-];
+import { useContent } from '../../context/ContentContext';
 
 const filters = ["All", "Seoul", "Busan", "Incheon"];
 
 export const PortfolioSection = () => {
   const [activeFilter, setActiveFilter] = useState("All");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const { content } = useContent();
+  const data = content?.portfolio || {};
+
+  // JSON 문자열로 저장된 프로젝트 리스트를 파싱하여 사용
+  let projects = [];
+  try {
+    projects = data.projects ? JSON.parse(data.projects) : [];
+  } catch (e) {
+    console.error("Portfolio parse error", e);
+  }
 
   const filteredProjects = activeFilter === "All" 
     ? projects 
-    : projects.filter(p => p.category === activeFilter);
+    : projects.filter((p: any) => p.category === activeFilter);
 
   return (
     <section id="portfolio" className="py-24 bg-white">
@@ -29,10 +30,10 @@ export const PortfolioSection = () => {
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
           <div>
              <h2 className="text-3xl md:text-4xl font-bold text-[#05668D] mb-4">
-              Our Portfolio
+              {data.title}
             </h2>
             <p className="text-slate-600">
-              Exploring our successful projects across the nation.
+              {data.desc}
             </p>
           </div>
           
@@ -55,7 +56,7 @@ export const PortfolioSection = () => {
 
         <ResponsiveMasonry columnsCountBreakPoints={{350: 1, 750: 2, 900: 3}}>
           <Masonry gutter="24px">
-            {filteredProjects.map((project) => (
+            {filteredProjects.map((project: any) => (
               <motion.div
                 layout
                 initial={{ opacity: 0 }}
@@ -86,7 +87,7 @@ export const PortfolioSection = () => {
         </ResponsiveMasonry>
       </div>
 
-      {/* Simple Lightbox */}
+      {/* Lightbox */}
       <AnimatePresence>
         {selectedImage && (
           <motion.div 
