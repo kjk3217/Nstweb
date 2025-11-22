@@ -1,68 +1,114 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
-import { ArrowDown, Award, ShieldCheck, Home } from 'lucide-react';
+import { ArrowDown, ChevronRight, Award, ShieldCheck, Home } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import { useSiteData } from '@/SiteContext';
 
 export const HeroSection = () => {
-  const { data } = useSiteData();
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 500], [0, 200]);
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
 
-  const hero = data?.hero || {};
-
   return (
     <section className="relative h-screen w-full overflow-hidden bg-slate-900">
-      <motion.div style={{ y: y1 }} className="absolute inset-0 z-0">
+      {/* Background Image with Parallax */}
+      <motion.div 
+        style={{ y: y1 }}
+        className="absolute inset-0 z-0"
+      >
         <img 
-          src={hero.bgImage} 
-          alt="Background" 
+          src="https://images.unsplash.com/photo-1758548157747-285c7012db5b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBjbGVhbiUyMGFwYXJ0bWVudCUyMGludGVyaW9yJTIwYnJpZ2h0fGVufDF8fHx8MTc2MzcwNTEyMHww&ixlib=rb-4.1.0&q=80&w=1080" 
+          alt="Modern clean apartment" 
           className="w-full h-full object-cover opacity-70"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#05668D]/90 via-[#05668D]/40 to-transparent" />
       </motion.div>
 
+      {/* Content */}
       <div className="relative z-10 container mx-auto px-4 h-full flex flex-col justify-center text-white">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="max-w-4xl"
+          className="max-w-3xl"
         >
-          {/* 제목: 크기와 색상을 데이터에서 받아옴 */}
-          <h1 
-            className="font-bold leading-tight mb-6 break-keep whitespace-pre-wrap"
-            style={{ 
-              fontSize: `${hero.titleSize || 60}px`,
-              color: hero.titleColor || '#ffffff'
-            }}
-          >
-            {hero.title}
+          <div className="flex items-center gap-2 mb-6">
+            <span className="bg-[#F0A202] text-[#05668D] px-3 py-1 rounded-full text-sm font-bold uppercase tracking-wide">
+              Since 2009
+            </span>
+            <span className="text-[#02C39A] font-medium tracking-wider uppercase">
+              Premium Air Quality Solution
+            </span>
+          </div>
+
+          <h1 className="text-5xl md:text-7xl font-bold leading-tight mb-6 break-keep">
+            20 Years of Expertise,<br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#02C39A] to-[#F0A202]">
+              Trusted by Major Construction Companies
+            </span>
           </h1>
           
-          {/* 부제목 */}
-          <p 
-            className="mb-10 font-light max-w-2xl leading-relaxed break-keep"
-            style={{ 
-              fontSize: `${hero.subtitleSize || 20}px`,
-              color: hero.subtitleColor || '#e2e8f0'
-            }}
-          >
-            {hero.subtitle}
+          <p className="text-xl md:text-2xl text-slate-200 mb-10 font-light max-w-2xl leading-relaxed break-keep">
+            Eco-Friendly NST Method - Korea's Leading Technology for New House Syndrome.
+            We create spaces where you can breathe freely.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button size="lg" className="bg-[#00A896] hover:bg-[#008c7d] text-white px-8 py-6 text-lg">
+            <Button 
+              size="lg" 
+              className="bg-[#00A896] hover:bg-[#008c7d] text-white px-8 py-6 text-lg rounded-none"
+            >
               View Portfolio
+            </Button>
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="bg-transparent border-white text-white hover:bg-white hover:text-[#05668D] px-8 py-6 text-lg rounded-none"
+            >
+              Learn About NST Method
             </Button>
           </div>
         </motion.div>
       </div>
-      
-      {/* 스크롤 화살표 */}
-      <motion.div style={{ opacity }} className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white">
-        <ArrowDown size={24} className="animate-bounce" />
+
+      {/* Floating Stats Bar - Top Right Absolute for Desktop */}
+      <div className="hidden lg:block absolute top-32 right-0 bg-white/10 backdrop-blur-md border-l-4 border-[#F0A202] p-6 max-w-xs">
+        <div className="space-y-6">
+          <div className="flex items-start gap-4">
+            <Award className="text-[#F0A202] shrink-0" size={24} />
+            <div>
+              <h3 className="text-white font-bold text-lg">2025 Winner</h3>
+              <p className="text-white/70 text-sm">Korea Environmental Grand Prize</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-4">
+            <Home className="text-[#02C39A] shrink-0" size={24} />
+            <div>
+              <h3 className="text-white font-bold text-lg">1,018+</h3>
+              <p className="text-white/70 text-sm">Apartment Complexes Completed</p>
+            </div>
+          </div>
+          <div className="flex items-start gap-4">
+            <ShieldCheck className="text-[#00A896] shrink-0" size={24} />
+            <div>
+              <h3 className="text-white font-bold text-lg">Verified</h3>
+              <p className="text-white/70 text-sm">Scientifically Proven Results</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Scroll Indicator */}
+      <motion.div 
+        style={{ opacity }}
+        className="absolute bottom-10 left-1/2 transform -translate-x-1/2 text-white flex flex-col items-center gap-2"
+      >
+        <span className="text-xs tracking-widest uppercase opacity-70">Scroll Down</span>
+        <motion.div
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          <ArrowDown size={20} />
+        </motion.div>
       </motion.div>
     </section>
   );

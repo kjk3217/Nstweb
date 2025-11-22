@@ -1,29 +1,46 @@
 import React, { useState } from 'react';
-import { motion } from 'motion/react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { useSiteData } from '@/SiteContext';
+import { motion, AnimatePresence } from 'motion/react';
+import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+
+const steps = [
+  {
+    id: "01",
+    code: "NST-S100",
+    title: "Decomposition",
+    desc: "Removal of construction residue, mold, and harmful bacteria using our proprietary active solution.",
+    details: "Penetrates deep into porous materials to break down pollutants at the molecular level.",
+    image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=1000",
+  },
+  {
+    id: "02",
+    code: "NST-S200",
+    title: "Blocking",
+    desc: "Sealing of exposed surfaces to prevent the emission of Formaldehyde and Volatile Organic Compounds (VOCs).",
+    details: "Forms a semi-permanent barrier that allows moisture regulation while blocking toxins.",
+    image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1000",
+  },
+  {
+    id: "03",
+    code: "NST-F100",
+    title: "Adsorption",
+    desc: "Final air treatment using advanced photocatalytic coating to purify indoor air continuously.",
+    details: "Reacts with indoor light to decompose airborne pollutants and eliminate odors.",
+    image: "https://images.unsplash.com/photo-1527011046414-4781f1f94f8c?auto=format&fit=crop&q=80&w=1000",
+  }
+];
 
 export const ProcessSection = () => {
-  const { data } = useSiteData();
-  const config = data?.process || {};
   const [activeStep, setActiveStep] = useState(0);
-
-  // 데이터가 없을 경우를 대비한 방어 코드 (또는 Default Data 사용)
-  const steps = [
-    { id: "01", ...config.step1 },
-    { id: "02", ...config.step2 },
-    { id: "03", ...config.step3 }
-  ];
 
   return (
     <section id="process" className="py-24 bg-white">
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-[#05668D] mb-4">
-            {config.title}
+            The NST 3-Step Process
           </h2>
           <p className="text-slate-600 max-w-2xl mx-auto">
-            {config.desc}
+            A scientifically engineered method to ensure your home is safe from day one.
           </p>
         </div>
 
@@ -32,6 +49,7 @@ export const ProcessSection = () => {
           {steps.map((step, index) => (
             <div key={index} className="relative group perspective-1000">
               <div className="relative h-[500px] w-full transition-all duration-500 transform-style-3d group-hover:rotate-y-180">
+                
                 {/* Front */}
                 <div className="absolute inset-0 backface-hidden bg-slate-100 rounded-2xl overflow-hidden shadow-lg">
                    <div className="h-2/3 relative">
@@ -46,11 +64,14 @@ export const ProcessSection = () => {
                       <p className="text-slate-500 text-sm line-clamp-2">{step.desc}</p>
                    </div>
                 </div>
+
                 {/* Back */}
                 <div className="absolute inset-0 backface-hidden rotate-y-180 bg-[#05668D] rounded-2xl p-8 flex flex-col justify-center text-white">
                   <div className="text-6xl font-bold opacity-10 mb-4">{step.id}</div>
                   <h3 className="text-3xl font-bold mb-4 text-[#02C39A]">{step.title}</h3>
-                  <p className="text-white/80 mb-6 leading-relaxed">{step.desc}</p>
+                  <p className="text-white/80 mb-6 leading-relaxed">
+                    {step.desc}
+                  </p>
                   <div className="bg-white/10 p-4 rounded-lg border border-white/10">
                     <h4 className="font-bold mb-2 text-[#F0A202]">Key Benefit</h4>
                     <p className="text-sm text-white/70">{step.details}</p>
@@ -60,7 +81,8 @@ export const ProcessSection = () => {
             </div>
           ))}
         </div>
-        {/* ... Mobile View Code (Use 'steps' array identically) ... */}
+
+        {/* Mobile Slider View */}
         <div className="lg:hidden relative">
             <div className="overflow-hidden rounded-2xl shadow-xl bg-white">
               <motion.div
@@ -97,7 +119,10 @@ export const ProcessSection = () => {
               </button>
               <div className="flex gap-2 items-center">
                 {steps.map((_, i) => (
-                  <div key={i} className={`w-2 h-2 rounded-full transition-all ${i === activeStep ? 'w-8 bg-[#00A896]' : 'bg-slate-300'}`} />
+                  <div 
+                    key={i} 
+                    className={`w-2 h-2 rounded-full transition-all ${i === activeStep ? 'w-8 bg-[#00A896]' : 'bg-slate-300'}`} 
+                  />
                 ))}
               </div>
                <button 
@@ -108,8 +133,9 @@ export const ProcessSection = () => {
               </button>
             </div>
         </div>
-
-        <style dangerouslySetInnerHTML={{
+      </div>
+      
+       <style dangerouslySetInnerHTML={{
         __html: `
           .perspective-1000 { perspective: 1000px; }
           .transform-style-3d { transform-style: preserve-3d; }

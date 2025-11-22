@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import Masonry, { ResponsiveMasonry } from 'react-responsive-masonry';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ZoomIn } from 'lucide-react';
-import { useSiteData } from '@/SiteContext';
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 
-// Projects data remains static for now, or can be moved to SiteContext if needed
 const projects = [
   { id: 1, title: "Gangnam Prugio Summit", category: "Seoul", year: "2024", builder: "Daewoo E&C", img: "https://images.unsplash.com/photo-1600607686527-6fb886090705?auto=format&fit=crop&q=80&w=800" },
   { id: 2, title: "Busan LCT The Sharp", category: "Busan", year: "2023", builder: "POSCO E&C", img: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&q=80&w=800" },
@@ -14,12 +13,9 @@ const projects = [
   { id: 6, title: "Acroriver Park", category: "Seoul", year: "2023", builder: "DL E&C", img: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&q=80&w=800" },
 ];
 
-const filters = ["All", "서울/경기", "충청/대전", "경상/부산"];
+const filters = ["All", "Seoul", "Busan", "Incheon"];
 
 export const PortfolioSection = () => {
-  const { data } = useSiteData();
-  const config = data?.portfolio || {};
-  
   const [activeFilter, setActiveFilter] = useState("All");
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -33,10 +29,10 @@ export const PortfolioSection = () => {
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
           <div>
              <h2 className="text-3xl md:text-4xl font-bold text-[#05668D] mb-4">
-              {config.title}
+              Our Portfolio
             </h2>
             <p className="text-slate-600">
-              {config.desc}
+              Exploring our successful projects across the nation.
             </p>
           </div>
           
@@ -89,7 +85,31 @@ export const PortfolioSection = () => {
           </Masonry>
         </ResponsiveMasonry>
       </div>
-      {/* Lightbox code remains same */}
+
+      {/* Simple Lightbox */}
+      <AnimatePresence>
+        {selectedImage && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] bg-black/90 flex items-center justify-center p-4"
+            onClick={() => setSelectedImage(null)}
+          >
+            <button className="absolute top-8 right-8 text-white hover:text-[#02C39A]">
+              <X size={32} />
+            </button>
+            <motion.img 
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              src={selectedImage} 
+              alt="Project Full View" 
+              className="max-w-full max-h-[90vh] rounded-lg shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 };
