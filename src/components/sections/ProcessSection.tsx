@@ -1,46 +1,29 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
-
-const steps = [
-  {
-    id: "01",
-    code: "NST-S100",
-    title: "Decomposition 분해/제거",
-    desc: "빛이 있거나 없는 모든 환경에서 유해물질을 지속적으로 광분해하여 흡착 제거합니다.",
-    details: "가시광촉매 광분해/흡착 기술",
-    image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=1000",
-  },
-  {
-    id: "02",
-    code: "NST-S200",
-    title: "Blocking 침투/차단",
-    desc: "단순 차폐가 아닌, 자재 내부 깊숙이 침투하여 유해물질을 밖으로 밀어내고 방출을 차단합니다.",
-    details: "유해물질 대량 방출 원인 제거",
-    image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1000",
-  },
-  {
-    id: "03",
-    code: "NST-F100",
-    title: "Adsorption 흡착/탈취",
-    desc: "시공이 어려운 취약 공간의 잔류 유해물질까지 흡착하여 제거하며 숲속 향기를 더합니다.",
-    details: "다공성 흡착 및 탈취 케어",
-    image: "https://images.unsplash.com/photo-1527011046414-4781f1f94f8c?auto=format&fit=crop&q=80&w=1000",
-  }
-];
+import { motion } from 'motion/react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { useSiteData } from '@/SiteContext';
 
 export const ProcessSection = () => {
+  const { data } = useSiteData();
+  const config = data?.process || {};
   const [activeStep, setActiveStep] = useState(0);
+
+  // 데이터가 없을 경우를 대비한 방어 코드 (또는 Default Data 사용)
+  const steps = [
+    { id: "01", ...config.step1 },
+    { id: "02", ...config.step2 },
+    { id: "03", ...config.step3 }
+  ];
 
   return (
     <section id="process" className="py-24 bg-white">
       <div className="container mx-auto px-4 md:px-6">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-[#05668D] mb-4">
-            NST공법 3단계 메커니즘
+            {config.title}
           </h2>
           <p className="text-slate-600 max-w-2xl mx-auto">
-            단순한 코팅이 아닌, 공기를 설계하는 과학 기술입니다. 이미 방출된 유해물질뿐만 아니라 앞으로 발생할 오염물질까지 제거합니다.
+            {config.desc}
           </p>
         </div>
 
@@ -49,7 +32,6 @@ export const ProcessSection = () => {
           {steps.map((step, index) => (
             <div key={index} className="relative group perspective-1000">
               <div className="relative h-[500px] w-full transition-all duration-500 transform-style-3d group-hover:rotate-y-180">
-                
                 {/* Front */}
                 <div className="absolute inset-0 backface-hidden bg-slate-100 rounded-2xl overflow-hidden shadow-lg">
                    <div className="h-2/3 relative">
@@ -64,14 +46,11 @@ export const ProcessSection = () => {
                       <p className="text-slate-500 text-sm line-clamp-2">{step.desc}</p>
                    </div>
                 </div>
-
                 {/* Back */}
                 <div className="absolute inset-0 backface-hidden rotate-y-180 bg-[#05668D] rounded-2xl p-8 flex flex-col justify-center text-white">
                   <div className="text-6xl font-bold opacity-10 mb-4">{step.id}</div>
                   <h3 className="text-3xl font-bold mb-4 text-[#02C39A]">{step.title}</h3>
-                  <p className="text-white/80 mb-6 leading-relaxed">
-                    {step.desc}
-                  </p>
+                  <p className="text-white/80 mb-6 leading-relaxed">{step.desc}</p>
                   <div className="bg-white/10 p-4 rounded-lg border border-white/10">
                     <h4 className="font-bold mb-2 text-[#F0A202]">Key Benefit</h4>
                     <p className="text-sm text-white/70">{step.details}</p>
@@ -81,8 +60,7 @@ export const ProcessSection = () => {
             </div>
           ))}
         </div>
-
-        {/* Mobile Slider View */}
+        {/* ... Mobile View Code (Use 'steps' array identically) ... */}
         <div className="lg:hidden relative">
             <div className="overflow-hidden rounded-2xl shadow-xl bg-white">
               <motion.div
@@ -119,10 +97,7 @@ export const ProcessSection = () => {
               </button>
               <div className="flex gap-2 items-center">
                 {steps.map((_, i) => (
-                  <div 
-                    key={i} 
-                    className={`w-2 h-2 rounded-full transition-all ${i === activeStep ? 'w-8 bg-[#00A896]' : 'bg-slate-300'}`} 
-                  />
+                  <div key={i} className={`w-2 h-2 rounded-full transition-all ${i === activeStep ? 'w-8 bg-[#00A896]' : 'bg-slate-300'}`} />
                 ))}
               </div>
                <button 
@@ -133,9 +108,8 @@ export const ProcessSection = () => {
               </button>
             </div>
         </div>
-      </div>
-      
-       <style dangerouslySetInnerHTML={{
+
+        <style dangerouslySetInnerHTML={{
         __html: `
           .perspective-1000 { perspective: 1000px; }
           .transform-style-3d { transform-style: preserve-3d; }
