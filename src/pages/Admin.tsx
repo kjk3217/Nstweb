@@ -11,38 +11,80 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { 
   Loader2, UploadCloud, LayoutTemplate, Eye, 
   CheckCircle2, AlertCircle, BarChart3,
-  Palette, Image as ImageIcon, X, Monitor, Menu, LogOut, Mail
+  Palette, Image as ImageIcon, X, Monitor, Menu, LogOut, Mail,
+  Workflow, FlaskConical, Briefcase
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
-// --- [1. 초기 기본 데이터] ---
+// --- [1. 초기 기본 데이터 (SiteContext와 동일하게 맞춤)] ---
 const defaultData = {
   hero: {
     title: "20년 축적된 노하우, 대형 건설사가 선택한 기술",
-    titleColor: "#ffffff", titleSize: "60",
+    titleColor: "#ffffff",
+    titleSize: "60", // px 단위
     subtitle: "새집증후군 개선 원조 기술 NST공법. 국내 유일의 원스톱 시스템으로...",
-    subtitleColor: "#e2e8f0", subtitleSize: "20",
+    subtitleColor: "#e2e8f0",
+    subtitleSize: "20",
     bgImage: "https://images.unsplash.com/photo-1758548157747-285c7012db5b?auto=format&fit=crop&q=80&w=1080"
   },
   whyNST: {
     sectionTitle: "새집증후군 왜 NST 공법인가?",
-    titleColor: "#05668D", desc: "원료 확보부터 연구·개발, 생산, 시공까지 본사에서 직접 수행하는 국내 유일 통합 솔루션입니다.",
-    cardHeight: "400",
+    titleColor: "#05668D",
+    desc: "원료 확보부터 연구·개발, 생산, 시공까지 본사에서 직접 수행하는 국내 유일 통합 솔루션입니다.",
+    cardHeight: "400", // 카드 높이 조절
     card1: { title: "System 원스톱 시스템", desc: "원료관리-연구개발-제품생산까지...", image: "https://images.unsplash.com/photo-1760970237216-17a474403b5c?w=800" },
     card2: { title: "Partnerships 시공 실적", desc: "국내 건설사 신축 아파트 전세대...", image: "https://images.unsplash.com/photo-1653016380323-a4496cbe3cf0?w=800" },
     card3: { title: "Experience 20년 노하우", desc: "20년 경력으로 현장 맞춤형...", image: "https://images.unsplash.com/photo-1588665306984-d5c6f62224aa?w=800" }
   },
+  // [NEW] Process Section
+  process: {
+    title: "NST공법 3단계 메커니즘",
+    desc: "단순한 코팅이 아닌, 공기를 설계하는 과학 기술입니다. 이미 방출된 유해물질뿐만 아니라 앞으로 발생할 오염물질까지 제거합니다.",
+    step1: { 
+      code: "NST-S100", title: "Decomposition 분해/제거", 
+      desc: "빛이 있거나 없는 모든 환경에서 유해물질을 지속적으로 광분해하여 흡착 제거합니다.", 
+      details: "가시광촉매 광분해/흡착 기술",
+      image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&q=80&w=1000" 
+    },
+    step2: { 
+      code: "NST-S200", title: "Blocking 침투/차단", 
+      desc: "단순 차폐가 아닌, 자재 내부 깊숙이 침투하여 유해물질을 밖으로 밀어내고 방출을 차단합니다.", 
+      details: "유해물질 대량 방출 원인 제거",
+      image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&q=80&w=1000" 
+    },
+    step3: { 
+      code: "NST-F100", title: "Adsorption 흡착/탈취", 
+      desc: "시공이 어려운 취약 공간의 잔류 유해물질까지 흡착하여 제거하며 숲속 향기를 더합니다.", 
+      details: "다공성 흡착 및 탈취 케어",
+      image: "https://images.unsplash.com/photo-1527011046414-4781f1f94f8c?auto=format&fit=crop&q=80&w=1000" 
+    }
+  },
+  // [NEW] Scientific Section
+  scientific: {
+    awardTitle: "2025 대한민국환경대상 수상",
+    awardDesc: "환경부 후원, 실내공기질 개선 기술력 입증.",
+    sectionTitle: "새집증후군 유발물질\n원천 제거 및 차단",
+    sectionDesc: "NST 공법은 공정 시험법에 따라 유해물질 저감 성능을 객관적으로 입증받았으며, 시공 후 즉시 입주가 가능할 정도로 안전합니다."
+  },
+  // [NEW] Portfolio Section
+  portfolio: {
+    title: "시공 실적 (Portfolio)",
+    desc: "국내 대형 건설사가 선택한 NST공법의 주요 시공 사례를 확인하세요."
+  },
   results: {
-    bgColor: "#05668D",
     stat1: { value: "1,018+", label: "Complexes", sub: "전세대 일괄시공" },
     stat2: { value: "50+", label: "Teams", sub: "전문 시공팀" },
-    stat3: { value: "20", label: "Years", sub: "축적된 노하우" }
+    stat3: { value: "20", label: "Years", sub: "축적된 노하우" },
+    bgColor: "#05668D" // 배경색 조절
   },
   contact: {
-    phone: "043-222-2322", email: "info@knst.co.kr", address: "충북 청주시 흥덕구 공단로134"
+    phone: "043-222-2322",
+    email: "info@knst.co.kr",
+    address: "충북 청주시 흥덕구 공단로134"
   },
   theme: {
-    primaryColor: "#05668D", secondaryColor: "#00A896"
+    primaryColor: "#05668D",
+    secondaryColor: "#00A896"
   }
 };
 
@@ -79,7 +121,8 @@ export const AdminPage = () => {
     const unsub = onSnapshot(doc(db, "site_config", "main"), 
       (docSnap) => {
         if (docSnap.exists()) {
-          setData({ ...defaultData, ...docSnap.data() });
+          // DB 데이터와 defaultData를 병합하여 새 필드가 누락되지 않도록 함
+          setData((prev: any) => ({ ...defaultData, ...docSnap.data() }));
         } else {
           setDoc(docSnap.ref, defaultData).catch(err => console.error(err));
         }
@@ -200,12 +243,14 @@ export const AdminPage = () => {
   const menuItems = [
     { id: 'hero', label: '메인 히어로', icon: Monitor, desc: '첫 화면 이미지 및 문구' },
     { id: 'whynst', label: 'Why NST', icon: CheckCircle2, desc: '특장점 섹션 관리' },
+    { id: 'process', label: 'Process', icon: Workflow, desc: '3단계 공정 관리' },
+    { id: 'scientific', label: 'Scientific', icon: FlaskConical, desc: '과학적 입증 내용' },
     { id: 'results', label: '실적 및 통계', icon: BarChart3, desc: '숫자로 보는 성과' },
+    { id: 'portfolio', label: 'Portfolio', icon: Briefcase, desc: '포트폴리오 헤더' },
     { id: 'contact', label: '연락처 & 테마', icon: Palette, desc: '기본 정보 및 색상' },
   ];
 
   return (
-    // 수정 포인트: h-[100dvh]로 모바일 브라우저 높이 대응
     <div className="flex h-[100dvh] bg-[#F8FAFC] overflow-hidden font-sans">
       <AnimatePresence>
         {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
@@ -264,7 +309,6 @@ export const AdminPage = () => {
       </aside>
 
       {/* === Main Content Area === */}
-      {/* 수정 포인트: min-h-0 추가하여 flex 자식의 스크롤 동작 보장 */}
       <main className="flex-1 flex flex-col h-full min-h-0 overflow-hidden relative">
         
         {/* Mobile Header */}
@@ -302,7 +346,6 @@ export const AdminPage = () => {
         </header>
 
         {/* Content Scroll Area */}
-        {/* 수정 포인트: pb-40으로 하단 여백을 크게 주어 내용이 잘리지 않게 함 */}
         <div className="flex-1 min-h-0 overflow-y-auto p-4 md:p-8 lg:p-12 bg-[#F8FAFC] scroll-smooth">
           <div className="max-w-5xl mx-auto pb-40">
             
@@ -416,6 +459,83 @@ export const AdminPage = () => {
                     ))}
                   </div>
                 </div>
+              )}
+
+              {/* [Process] */}
+              {activeTab === 'process' && (
+                <div className="space-y-8">
+                  <Card className="shadow-sm border-slate-200">
+                    <CardHeader>
+                      <CardTitle>섹션 공통 설정</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-6 grid md:grid-cols-2 gap-6">
+                      <InputGroup label="섹션 제목" path="process.title" />
+                      <InputGroup label="설명 문구" path="process.desc" type="textarea" />
+                    </CardContent>
+                  </Card>
+
+                  <div className="grid md:grid-cols-3 gap-6">
+                    {['step1', 'step2', 'step3'].map((step, idx) => (
+                      <Card key={step} className="shadow-md border-slate-200">
+                        <CardHeader className="bg-slate-50 border-b border-slate-100 pb-3">
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-base">Step {idx + 1}</CardTitle>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="p-4 space-y-4">
+                          <ImageUploadCard 
+                            title="이미지"
+                            currentImage={getValue(data, `process.${step}.image`)}
+                            fieldPath={`process.${step}.image`}
+                          />
+                          <div className="h-px bg-slate-100 my-2" />
+                          <InputGroup label="코드" path={`process.${step}.code`} />
+                          <InputGroup label="제목" path={`process.${step}.title`} />
+                          <InputGroup label="내용" path={`process.${step}.desc`} type="textarea" />
+                          <InputGroup label="상세 효과" path={`process.${step}.details`} />
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* [Scientific] */}
+              {activeTab === 'scientific' && (
+                <div className="grid lg:grid-cols-2 gap-8">
+                  <Card className="shadow-sm border-slate-200 h-fit">
+                    <CardHeader className="bg-slate-50 border-b border-slate-100">
+                      <CardTitle>좌측: 어워드/인증</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-6 space-y-4">
+                      <InputGroup label="어워드 제목" path="scientific.awardTitle" />
+                      <InputGroup label="어워드 설명" path="scientific.awardDesc" type="textarea" />
+                    </CardContent>
+                  </Card>
+
+                  <Card className="shadow-sm border-slate-200 h-fit">
+                    <CardHeader className="bg-slate-50 border-b border-slate-100">
+                      <CardTitle>우측: 차트/내용</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-6 space-y-4">
+                      <InputGroup label="섹션 제목" path="scientific.sectionTitle" type="textarea" />
+                      <InputGroup label="설명 문구" path="scientific.sectionDesc" type="textarea" />
+                    </CardContent>
+                  </Card>
+                </div>
+              )}
+
+              {/* [Portfolio] */}
+              {activeTab === 'portfolio' && (
+                 <Card className="shadow-sm border-slate-200">
+                    <CardHeader>
+                      <CardTitle>섹션 헤더 설정</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-6 space-y-6">
+                      <InputGroup label="섹션 제목" path="portfolio.title" />
+                      <InputGroup label="설명 문구" path="portfolio.desc" type="textarea" />
+                    </CardContent>
+                 </Card>
               )}
 
               {/* [Results] */}
